@@ -64,8 +64,12 @@ http://localhost:8080/api/v1
 ### 6. 주문/결제 API
 - [6.1 주문 및 결제](#61-주문-및-결제)
 
-### 7. 인기 상품 조회 API
-- [7.1 최근 3일간 상위 5개 상품 조회](#71-최근-3일간-상위-5개-상품-조회)
+### 7. 쿠폰 관리 API
+- [7.1 선착순 쿠폰 발급](#71-선착순-쿠폰-발급)
+- [7.2 보유 쿠폰 목록 조회](#72-보유-쿠폰-목록-조회)
+
+### 8. 인기 상품 조회 API
+- [8.1 최근 3일간 상위 5개 상품 조회](#81-최근-3일간-상위-5개-상품-조회)
 
 ---
 
@@ -448,9 +452,72 @@ POST /orders
 
 ---
 
-## 7. 인기 상품 조회 API
+## 7. 쿠폰 관리 API
 
-### 7.1 최근 3일간 상위 5개 상품 조회
+### 7.1 선착순 쿠폰 발급
+사용자가 선착순으로 할인 쿠폰을 발급받습니다.
+
+```http
+POST /coupons/{couponId}/issue
+```
+
+**Request**
+```json
+{
+  "userId": 1
+}
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "userCouponId": 123,
+    "couponId": 1,
+    "userId": 1,
+    "discountAmount": 5000,
+    "expiresAt": "2025-09-29T01:57:00Z",
+    "issuedAt": "2025-08-29T01:57:00Z"
+  }
+}
+```
+
+**Error Cases**
+- `409 COUPON_SOLD_OUT`: 쿠폰이 모두 소진된 경우
+- `409 ALREADY_ISSUED`: 이미 발급받은 사용자인 경우
+
+### 7.2 보유 쿠폰 목록 조회
+사용자가 보유한 쿠폰 목록을 조회합니다.
+
+```http
+GET /users/{userId}/coupons
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "coupons": [
+      {
+        "userCouponId": 123,
+        "couponId": 1,
+        "discountAmount": 5000,
+        "status": "AVAILABLE",
+        "expiresAt": "2025-09-29T01:57:00Z",
+        "issuedAt": "2025-08-29T01:57:00Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 8. 인기 상품 조회 API
+
+### 8.1 최근 3일간 상위 5개 상품 조회
 
 ```http
 GET /products/popular
