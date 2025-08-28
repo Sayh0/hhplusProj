@@ -5,7 +5,9 @@
 "e-커머스 상품 주문 서비스 시나리오"의 REST API 명세서입니다.
 
 ### Base URL
+```
 http://localhost:8080/api/v1
+```
 
 ### 공통 응답 형식
 ```json
@@ -16,42 +18,89 @@ http://localhost:8080/api/v1
     "code": "ERROR_CODE",
     "message": "에러 메시지"
   },
-  "timestamp": "2025-08-29T01:57:00Z"
+  "timestamp": "YYYY-MM-DD HH:mm:SS"
 }
 ```
 
 ### HTTP 상태 코드
-| 상태 코드 | 설명 |
-|-----------|------|
+| 상태 코드 | 설명 |  
+| -------- | ---- |  
 | 200 | 성공 |
 | 201 | 생성 성공 |
 | 400 | 잘못된 요청 |
+| 401 | 인증 필요 |
+| 403 | 권한 없음 |
 | 404 | 리소스 없음 |
 | 409 | 충돌 (재고 부족, 잔액 부족 등) |
 | 500 | 서버 오류 |
 
 ---
 
-## API 목차 (Index)
+## API 목록
 
-### 1. 잔액 관리 API
-- [1.1 잔액 충전](#1-잔액-충전)
-- [1.2 잔액 조회](#1-2-잔액-조회)
+### 1. 인증 API
+- [1.1 로그인](#11-로그인)
 
-### 2. 상품 관리 API
-- [2.1 상품 목록 조회](#2-1-상품-목록-조회)
-- [2.2 상품 상세 조회](#2-2-상품-상세-조회)
+### 2. 잔액 관리 API
+- [2.1 잔액 충전](#21-잔액-충전)
+- [2.2 잔액 조회 (사용자용)](#22-잔액-조회-사용자용)
+- [2.3 잔액 조회 (관리자용)](#23-잔액-조회-관리자용)
 
-### 3. 주문 관리 API
-- [3.1 주문 생성](#3-1-주문-생성)
-- [3.2 주문 조회](#3-2-주문-조회)
-- [3.3 주문 취소](#3-3-주문-취소)
+### 3. 상품 관리 API
+- [3.1 상품 목록 조회](#31-상품-목록-조회)
+- [3.2 상품 등록 (관리자 전용)](#32-상품-등록-관리자-전용)
+- [3.3 상품 수정 (관리자 전용)](#33-상품-수정-관리자-전용)
+- [3.4 상품 논리적 삭제 (관리자 전용)](#34-상품-논리적-삭제-관리자-전용)
+- [3.5 상품 물리적 삭제 (관리자 전용)](#35-상품-물리적-삭제-관리자-전용)
+- [3.6 삭제된 상품 복구 (관리자 전용)](#36-삭제된-상품-복구-관리자-전용)
+
+### 4. 카테고리 관리 API
+- [4.1 카테고리 목록 조회](#41-카테고리-목록-조회)
+
+### 5. 장바구니 API
+- [5.1 장바구니 조회](#51-장바구니-조회)
+- [5.2 장바구니에 상품 추가](#52-장바구니에-상품-추가)
+
+### 6. 주문/결제 API
+- [6.1 주문 및 결제](#61-주문-및-결제)
+
+### 7. 인기 상품 조회 API
+- [7.1 최근 3일간 상위 5개 상품 조회](#71-최근-3일간-상위-5개-상품-조회)
 
 ---
 
-## 1. 잔액 관리 API
+## 1. 인증 API
 
-### 1.1 잔액 충전
+### 1.1 로그인
+사용자 로그인 및 토큰 발급
+
+```http
+POST /auth/login
+```
+
+**Request**
+```json
+{
+  "username": "user1",
+  "password": "password123"
+}
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGci..."
+  }
+}
+```
+
+---
+
+## 2. 잔액 관리 API
+
+### 2.1 잔액 충전
 사용자의 잔액을 충전합니다.
 
 ```http
@@ -77,11 +126,7 @@ POST /users/{userId}/balance/charge
 }
 ```
 
-**Error Cases**
-- `400 INVALID_AMOUNT`: 충전 금액이 0 이하인 경우
-- `404 USER_NOT_FOUND`: 존재하지 않는 사용자
-
-### 1.2 잔액 조회
+### 2.2 잔액 조회 (사용자용)
 사용자의 현재 잔액을 조회합니다.
 
 ```http
@@ -94,27 +139,56 @@ GET /users/{userId}/balance
   "success": true,
   "data": {
     "userId": 1,
+    "username": "user1",
     "balance": 15000
+  }
+}
+```
+
+### 2.3 잔액 조회 (관리자용)
+관리자가 모든 사용자의 잔액을 조회합니다.
+
+```http
+GET /admin/users/{userId}/balance
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "userId": 1,
+    "username": "user1",
+    "balance": 15000,
+    // TODO: 관리자용 상제 정보 추가 예정
+    // "totalCharged": 50000,
+    // "totalUsed": 35000,
+    // "lastChargedAt": "2025-08-29T02:00:00Z",
+    // "lastUsedAt": "2025-08-29T01:30:00Z",
+    // "status": "ACTIVE"
   }
 }
 ```
 
 ---
 
-## 2. 상품 관리 API
+## 3. 상품 관리 API
 
-### 2.1 상품 목록 조회
-전체 상품 목록을 조회합니다.
+### 3.1 상품 목록 조회
+전체 상품 목록을 조회합니다. 고객/관리자 모두 이용 가능합니다.
 
 ```http
 GET /products
 ```
 
 **Query Parameters**
-| 파라미터 | 타입 | 필수 | 설명 |
+| 파라미터 | 타입 | 필수여부 | 설명 |
 |----------|------|------|------|
 | page | int | N | 페이지 번호 (기본값: 0) |
 | size | int | N | 페이지 크기 (기본값: 20) |
+| status | string | N | 상품 활성화여부 (기본값:"ACTIVE") |
+| category | int | N | 카테고리 ID 검색 조회조건 |
+| keyword | string | N | 상품명 검색 조회조건 |
 
 **Response**
 ```json
@@ -127,7 +201,16 @@ GET /products
         "name": "스마트폰",
         "price": 500000,
         "stock": 10,
-        "description": "최신 스마트폰",
+        "categoryId": 1,
+        "categoryName": "전자제품",
+        // TODO : 이미지 파일 추가 시 구현...
+        // "images": [
+        //   {
+        //     "id": 1,
+        //     "url": "/images/products/1/main.jpg",
+        //     "isMain": true
+        //   }
+        // ],
         "createdAt": "2025-08-29T01:00:00Z"
       }
     ],
@@ -141,11 +224,21 @@ GET /products
 }
 ```
 
-### 2.2 상품 상세 조회
-특정 상품의 상세 정보를 조회합니다.
+### 3.2 상품 등록 (관리자 전용)
 
 ```http
-GET /products/{productId}
+POST /admin/products
+```
+
+**Request**
+```json
+{
+  "name": "노트북",
+  "price": 1000000,
+  "categoryId": 1,
+  "stock": 20,
+  "description": "고성능 노트북"
+}
 ```
 
 **Response**
@@ -153,32 +246,103 @@ GET /products/{productId}
 {
   "success": true,
   "data": {
-    "id": 1,
-    "name": "스마트폰",
-    "price": 500000,
-    "stock": 10,
-    "description": "최신 스마트폰",
-    "createdAt": "2025-08-29T01:00:00Z"
+    "productId": 2
+  }
+}
+```
+
+### 3.3 상품 수정 (관리자 전용)
+상품 정보를 수정합니다.
+
+```http
+PUT /admin/products/{productId}
+```
+
+**Request**
+```json
+{
+  "name": "고성능 노트북 Pro",
+  "price": 1200000,
+  "categoryId": 1,
+  "stock": 25,
+  "description": "업그레이드된 고성능 노트북"
+}
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "productId": 2,
+    "updatedAt": "2025-08-29T03:00:00Z"
+  }
+}
+```
+
+### 3.4 상품 논리적 삭제 (관리자 전용)
+상품을 논리적으로 삭제합니다. 데이터는 유지되지만 판매가 중단됩니다.
+
+```http
+PATCH /admin/products/{productId}/soft-delete
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "productId": 2,
+    "status": "DELETED",
+    "deletedAt": "2025-08-29T03:00:00Z"
+  }
+}
+```
+
+### 3.5 상품 물리적 삭제 (관리자 전용)
+상품을 완전히 삭제합니다. 복구가 불가능합니다.
+
+```http
+DELETE /admin/products/{productId}
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "message": "상품이 완전히 삭제되었습니다."
+  }
+}
+```
+
+### 3.6 삭제된 상품 복구 (관리자 전용)
+논리적으로 삭제된 상품을 복구합니다.
+
+```http
+PATCH /admin/products/{productId}/restore
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "productId": 2,
+    "status": "ACTIVE",
+    "restoredAt": "2025-08-29T03:00:00Z"
   }
 }
 ```
 
 ---
 
-## 3. 쿠폰 관리 API
+## 4. 카테고리 관리 API
 
-### 3.1 선착순 쿠폰 발급
-선착순으로 쿠폰을 발급받습니다.
+### 4.1 카테고리 목록 조회
 
 ```http
-POST /coupons/{couponId}/issue
-```
-
-**Request**
-```json
-{
-  "userId": 1
-}
+GET /categories
 ```
 
 **Response**
@@ -186,40 +350,10 @@ POST /coupons/{couponId}/issue
 {
   "success": true,
   "data": {
-    "userCouponId": 123,
-    "couponId": 1,
-    "userId": 1,
-    "discountAmount": 5000,
-    "expiresAt": "2025-09-29T01:57:00Z",
-    "issuedAt": "2025-08-29T01:57:00Z"
-  }
-}
-```
-
-**Error Cases**
-- `409 COUPON_SOLD_OUT`: 쿠폰이 모두 소진된 경우
-- `409 ALREADY_ISSUED`: 이미 발급받은 사용자인 경우
-
-### 3.2 보유 쿠폰 목록 조회
-사용자가 보유한 쿠폰 목록을 조회합니다.
-
-```http
-GET /users/{userId}/coupons
-```
-
-**Response**
-```json
-{
-  "success": true,
-  "data": {
-    "coupons": [
+    "categories": [
       {
-        "userCouponId": 123,
-        "couponId": 1,
-        "discountAmount": 5000,
-        "status": "AVAILABLE",
-        "expiresAt": "2025-09-29T01:57:00Z",
-        "issuedAt": "2025-08-29T01:57:00Z"
+        "id": 1,
+        "name": "전자제품"
       }
     ]
   }
@@ -228,10 +362,58 @@ GET /users/{userId}/coupons
 
 ---
 
-## 4. 주문 관리 API
+## 5. 장바구니 API
 
-### 4.1 주문하기
-상품을 주문하고 결제를 처리합니다.
+### 5.1 장바구니 조회
+
+```http
+GET /cart
+```
+
+**Response**
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "itemId": 1,
+        "productId": 1,
+        "productName": "스마트폰",
+        "quantity": 2,
+        "unitPrice": 500000
+      }
+    ]
+  }
+}
+```
+
+### 5.2 장바구니에 상품 추가
+
+```http
+POST /cart/items
+```
+
+**Request**
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+
+**Response**
+```json
+{
+  "success": true
+}
+```
+
+---
+
+## 6. 주문/결제 API
+
+### 6.1 주문 및 결제
 
 ```http
 POST /orders
@@ -242,14 +424,8 @@ POST /orders
 {
   "userId": 1,
   "items": [
-    {
-      "productId": 1,
-      "quantity": 2
-    },
-    {
-      "productId": 2,
-      "quantity": 1
-    }
+    {"productId": 1, "quantity": 2},
+    {"productId": 3, "quantity": 1}
   ],
   "couponId": 123
 }
@@ -260,96 +436,37 @@ POST /orders
 {
   "success": true,
   "data": {
-    "orderId": 456,
-    "userId": 1,
-    "totalAmount": 1000000,
-    "discountAmount": 5000,
-    "finalAmount": 995000,
+    "orderId": 789,
+    "totalAmount": 2000000,
+    "discountAmount": 50000,
+    "finalAmount": 1950000,
     "status": "COMPLETED",
-    "items": [
-      {
-        "productId": 1,
-        "productName": "스마트폰",
-        "quantity": 2,
-        "unitPrice": 500000,
-        "totalPrice": 1000000
-      }
-    ],
-    "createdAt": "2025-08-29T01:57:00Z"
-  }
-}
-```
-
-**Error Cases**
-- `409 INSUFFICIENT_BALANCE`: 잔액 부족
-- `409 INSUFFICIENT_STOCK`: 재고 부족
-- `400 INVALID_COUPON`: 유효하지 않은 쿠폰
-- `404 PRODUCT_NOT_FOUND`: 존재하지 않는 상품
-
-### 4.2 주문 내역 조회
-사용자의 주문 내역을 조회합니다.
-
-```http
-GET /users/{userId}/orders
-```
-
-**Response**
-```json
-{
-  "success": true,
-  "data": {
-    "orders": [
-      {
-        "orderId": 456,
-        "totalAmount": 995000,
-        "status": "COMPLETED",
-        "createdAt": "2025-08-29T01:57:00Z"
-      }
-    ]
+    "createdAt": "2025-08-29T02:27:00Z"
   }
 }
 ```
 
 ---
 
-## 5. 통계 API
+## 7. 인기 상품 조회 API
 
-### 5.1 인기 상품 조회
-최근 3일간 가장 많이 팔린 상위 5개 상품을 조회합니다.
+### 7.1 최근 3일간 상위 5개 상품 조회
 
 ```http
 GET /products/popular
 ```
-
-**Query Parameters**
-| 파라미터 | 타입 | 필수 | 설명 |
-|----------|------|------|------|
-| days | int | N | 조회 기간 (기본값: 3일) |
-| limit | int | N | 조회 개수 (기본값: 5개) |
 
 **Response**
 ```json
 {
   "success": true,
   "data": {
-    "period": {
-      "startDate": "2025-08-26T00:00:00Z",
-      "endDate": "2025-08-29T23:59:59Z"
-    },
     "products": [
       {
-        "rank": 1,
         "productId": 1,
         "productName": "스마트폰",
         "totalSold": 150,
         "totalRevenue": 75000000
-      },
-      {
-        "rank": 2,
-        "productId": 2,
-        "productName": "노트북",
-        "totalSold": 80,
-        "totalRevenue": 80000000
       }
     ]
   }
@@ -366,6 +483,10 @@ GET /products/popular
 | `PRODUCT_NOT_FOUND` | 404 | 상품을 찾을 수 없음 |
 | `INSUFFICIENT_BALANCE` | 409 | 잔액 부족 |
 | `INSUFFICIENT_STOCK` | 409 | 재고 부족 |
+| `UNAUTHORIZED` | 401 | 인증이 필요함 |
+| `FORBIDDEN` | 403 | 권한이 없음 |
+| `CART_EMPTY` | 400 | 장바구니가 비어 있음 |
+| `CATEGORY_NOT_FOUND` | 404 | 카테고리를 찾을 수 없음 |
 | `INVALID_AMOUNT` | 400 | 유효하지 않은 금액 |
 | `COUPON_SOLD_OUT` | 409 | 쿠폰 소진 |
 | `ALREADY_ISSUED` | 409 | 이미 발급된 쿠폰 |
@@ -374,9 +495,7 @@ GET /products/popular
 
 ---
 
-## 인증 (추후 구현)
-현재는 인증 없이 userId를 직접 전달하는 방식이지만, 추후 JWT 토큰 기반 인증으로 변경 예정입니다.
+## 인증 및 권한
 
-```http
-Authorization: Bearer {jwt-token}
-```
+모든 인증이 필요한 API는 `Authorization: Bearer {jwt-token}` 헤더를 사용합니다.
+관리자 권한이 필요한 경우 별도 권한 체크가 적용됩니다.
