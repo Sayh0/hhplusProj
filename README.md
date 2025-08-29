@@ -15,3 +15,8 @@ docker-compose up -d
 ### API Documentation
 
 API 명세서는 [api-spec](./docs/api-spec) 디렉토리에서 확인할 수 있습니다.
+
+### Database Schema
+
+데이터베이스 스키마는 [ERD](./docs/erd) 디렉토리에서 확인할 수 있습니다.
+ERD PDF 파일은 [ERD PDF](./docs/erd/erd.pdf)에서 다운로드할 수 있습니다.
