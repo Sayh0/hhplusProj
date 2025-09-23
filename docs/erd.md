@@ -107,34 +107,58 @@
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | PRODUCT_ID | PK | 상품 ID |
-| CATEGORY_ID | FK | 카테고리 ID |
 | PRODUCT_NAME |  | 상품명 |
 | PRODUCT_PRICE |  | 상품가격 |
 | PRODUCT_STOCK |  | 재고수량 |
 | PRODUCT_STATUS |  | 활성/비활성 |
 | PRODUCT_DESCRIPTION |  | 상품 설명 |
+<!--DELETED 상태여부 추가 -->
+| DEL_YN |  | (논리적)삭제여부 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## CATEGORY (상품유형)
+<!--하나의 상품이 여러 유형 가질 수 있음 - 상품N:N:유형 해결 위한 중간테이블 추가-->
+## CATEGORY_PRODUCT (카테고리-상품연결)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| PRODUCT_ID | PK, FK | 상품 ID |
 | CATEGORY_ID | PK, FK | 카테고리 ID |
-| CATEGORY_NAME |  | 카테고리명 |
-| CATEGORY_DESCRIPTION |  | 설명 |
+| PRODUCT_ID | PK, FK | 상품 ID |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
+
+<!--상품유형 마스터 테이블로 변경-->
+## CATEGORY (상품유형)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CATEGORY_ID | PK | 카테고리 ID |
+| CATEGORY_NAME |  | 카테고리명 |
+| CATEGORY_DESCRIPTION |  | 설명 |
+| PARENT_CATEGORY_ID | FK | 상위 카테고리 ID (자기참조) |
+| CATEGORY_LEVEL |  | 카테고리 레벨 (1,2,3...) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
 
 ## ORDER (주문)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ORDER_NO | PK | 주문번호 |
 | USER_ID | FK | 사용자 ID |
+| ORDER_STATUS |  | 주문 상태 (PAYMENT_PENDING결제중, PAYMENT_COMPLETED결제완료, PREPARING상품준비중, SHIPPING배송중, DELIVERED배송완료) |
+| TOTAL_AMOUNT |  | 총 결제 금액 |
+| DELIVERY_NAME |  | 배송지 수령인명 |
+| DELIVERY_PHONE |  | 배송지 연락처 |
+| DELIVERY_ADDRESS |  | 배송지 주소 |
+| DELIVERY_ZIPCODE |  | 배송지 우편번호 |
+| DELIVERY_DESCRIPTION |  | 배송 설명 |
+| ORDER_DATE |  | 주문 일시 |
+| DELIVERY_DATE |  | 배송 완료 일시 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -150,24 +174,34 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
+<!--상품1:N이미지 관계로 변경, PK,FK개선-->
 ## PRODUCT_IMAGE (상품이미지)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| PRODUCT_ID | PK, FK | 상품 ID |
-| CATEGORY_ID | PK, FK | 카테고리 ID |
-| URL |  | 이미지 URL |
+| PRODUCT_IMAGE_ID | PK | 상품이미지 ID |
+| PRODUCT_ID | FK | 상품 ID |
+| IMAGE_URL |  | 이미지 URL |
+| IMAGE_DESCRIPTION |  | 이미지 설명 |
+| DISPLAY_ORDER |  | 표시 순서 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## PRODUCT_SALE_HISTORY (판매내역-통계용)
+<!--고객 민원 및 오류 확인 용 테이블로 변경-->
+## ORDER_HISTORY (주문내역)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| PRODUCT_ID | PK, FK | 상품 ID |
-| CATEGORY_ID | PK, FK | 카테고리 ID |
-| SOLD_QUANTITY |  | 판매 수량 |
-| SALES_DATE |  | 판매 일자 |
+| HISTORY_ID | PK | 이력 ID |
+| ORDER_NO | FK | 주문번호 |
+| USER_ID | FK | 사용자 ID |
+| PRODUCT_ID | FK | 상품 ID |
+| ACTION_TYPE |  | 액션 유형 (ORDER, CANCEL, REFUND 등) |
+| QUANTITY |  | 수량 |
+| PRICE |  | 가격 |
+| STATUS_BEFORE |  | 이전 상태 |
+| STATUS_AFTER |  | 이후 상태 |
+| REASON |  | 사유 (취소/환불 사유 등) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
