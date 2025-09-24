@@ -5,22 +5,40 @@
 
 ---
 
-## USER (사용자마스터테이블)
+## CUSTOMER (고객)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK | 사용자 고유 식별자 |
-| USER_NAME |  | 사용자명 |
-| PASSWORD |  | 비밀번호 |
-| EMAIL |  | 이메일 주소 |
+| CUSTOMER_ID | PK | 고객 고유식별자 |
+| CUSTOMER_NAME |  | 고객명 |
+| PASSWORD |  | 비밀번호(단방향 암호화 필요) |
+| EMAIL |  | 이메일 주소(양방향 암호화 필요)|
+| PHONE |  | 전화번호(양방향 암호화 필요)|
+| ADDRESS |  | 주소(양방향 암호화 필요)|
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## USER_ROLE (사용자소유권한)
+## ADMIN (관리자)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK, FK | 사용자 ID |
+| ADMIN_ID | PK | 관리자 고유식별자 |
+| ADMIN_NAME |  | 관리자명 |
+| PASSWORD |  | 비밀번호 (단방향 암호화 필요) |
+| EMAIL |  | 이메일 주소 (양방향 암호화 필요) |
+| PHONE |  | 전화번호 (양방향 암호화 필요) |
+| DEPARTMENT |  | 부서 |
+| POSITION |  | 직급 |
+| ADMIN_STATUS |  | 관리자 활성 상태 (ACTIVE활성, INACTIVE비활성) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+## ADMIN_ROLE (관리자권한)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| ADMIN_ID | PK, FK | 관리자 ID |
 | ROLE_ID | PK, FK | 권한 ID |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
@@ -32,15 +50,17 @@
 |--------|------|------|
 | ROLE_ID | PK | 권한 고유 식별자 |
 | ROLE_NAME |  | 권한명 |
+| ROLE_DESCRIPTION |  | 권한 설명 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## WALLET (잔고) <span style="font-size:0.85em;">(USER 와 1:1)</span>
+
+## WALLET (잔고) <span style="font-size:0.85em;">(CUSTOMER 와 1:1)</span>
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK, FK | 사용자 ID |
+| CUSTOMER_ID | PK, FK | 고객 ID |
 | BALANCE |  | 현재 잔고 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
@@ -50,7 +70,7 @@
 ## WALLET_HISTORY (잔고내역)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK, FK | 사용자 ID |
+| CUSTOMER_ID | PK, FK | 고객 ID |
 | AMOUNT |  | 사용액 |
 | USE_TYPE |  | 사용 유형 |
 | AMOUNT_AFTER |  | 이후 잔액 |
@@ -62,7 +82,7 @@
 ## CART (장바구니)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK, FK | 사용자 ID |
+| CUSTOMER_ID | PK, FK | 고객 ID |
 | CART_TYPE | PK | 장바구니 유형 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
@@ -81,10 +101,10 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## USER_COUPON (사용자소유쿠폰)
+## CUSTOMER_COUPON (고객소유쿠폰)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK, FK | 사용자 ID |
+| CUSTOMER_ID | PK, FK | 고객 ID |
 | COUPON_ID | PK, FK | 쿠폰 ID |
 | STATUS |  | 사용 상태 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
@@ -92,10 +112,10 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## USER_CART_ITEM (장바구니항목)
+## CUSTOMER_CART_ITEM (장바구니항목)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| USER_ID | PK, FK | 사용자 ID |
+| CUSTOMER_ID | PK, FK | 고객 ID |
 | CART_TYPE | PK, FK | 장바구니 유형 |
 | PRODUCT_ID | PK, FK | 상품 ID |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
@@ -149,7 +169,7 @@
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ORDER_NO | PK | 주문번호 |
-| USER_ID | FK | 사용자 ID |
+| CUSTOMER_ID | FK | 고객 ID |
 | ORDER_STATUS |  | 주문 상태 (PAYMENT_PENDING결제중, PAYMENT_COMPLETED결제완료, PREPARING상품준비중, SHIPPING배송중, DELIVERED배송완료) |
 | TOTAL_AMOUNT |  | 총 결제 금액 |
 | PAYMENT_METHOD |  | 결제 수단 (CARD카드, BANK_TRANSFER계좌이체, ETC기타) |
@@ -188,7 +208,7 @@
 |--------|------|------|
 | HISTORY_ID | PK | 이력 ID |
 | ORDER_NO | FK | 주문번호 |
-| USER_ID | FK | 사용자 ID |
+| CUSTOMER_ID | FK | 고객 ID |
 | PRODUCT_ID | FK | 상품 ID |
 | ACTION_TYPE |  | 액션 유형 (ORDER, CANCEL, REFUND 등) |
 | QUANTITY |  | 수량 |
