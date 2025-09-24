@@ -144,7 +144,7 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-
+<!-- 주문 테이블에 결제도 통합-->
 ## ORDER (주문)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
@@ -152,6 +152,10 @@
 | USER_ID | FK | 사용자 ID |
 | ORDER_STATUS |  | 주문 상태 (PAYMENT_PENDING결제중, PAYMENT_COMPLETED결제완료, PREPARING상품준비중, SHIPPING배송중, DELIVERED배송완료) |
 | TOTAL_AMOUNT |  | 총 결제 금액 |
+| PAYMENT_METHOD |  | 결제 수단 (CARD카드, BANK_TRANSFER계좌이체, ETC기타) |
+| PAYMENT_STATUS |  | 결제 상태 (PENDING대기, COMPLETED완료, FAILED실패, CANCELLED취소됨) |
+| PAYMENT_DATE |  | 결제 일시 |
+| CANCEL_DATE |  | 취소 일시 |
 | DELIVERY_NAME |  | 배송지 수령인명 |
 | DELIVERY_PHONE |  | 배송지 연락처 |
 | DELIVERY_ADDRESS |  | 배송지 주소 |
@@ -159,16 +163,6 @@
 | DELIVERY_DESCRIPTION |  | 배송 설명 |
 | ORDER_DATE |  | 주문 일시 |
 | DELIVERY_DATE |  | 배송 완료 일시 |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
-
-## PAYMENT (결제)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| PAYMENT_ID | PK | 결제 ID |
-| ORDER_NO | FK | 주문번호 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -211,9 +205,10 @@
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ORDER_NO | PK, FK | 주문번호 |
-| USER_ID | PK, FK | 사용자 ID |
-| PRODUCT_ID | FK | 상품 ID |
+| PRODUCT_ID | PK, FK | 상품 ID |
 | QUANTITY |  | 주문 수량 |
+| ORDER_PRICE |  | 단가 (주문 시점 가격) |
+| TOTAL_ORDER_PRICE |  | 총 가격 (QUANTITY × ORDER_PRICE) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
