@@ -19,6 +19,32 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
+## CODE_CATEGORY (코드카테고리)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CATEGORY_CODE | PK | 카테고리 코드 |
+| CATEGORY_NAME |  | 카테고리명 |
+| CATEGORY_DESCRIPTION |  | 카테고리 설명 |
+| IS_ACTIVE |  | 활성 여부 (Y, N) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+## CODE_ITEM (코드항목)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CATEGORY_CODE | PK, FK | 카테고리 코드 |
+| ITEM_CODE | PK | 항목 코드 |
+| ITEM_NAME |  | 항목명 |
+| ITEM_DESCRIPTION |  | 항목 설명 |
+| SORT_ORDER |  | 정렬 순서 |
+| IS_ACTIVE |  | 활성 여부 (Y, N) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
 ## ADMIN (관리자)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
@@ -29,7 +55,7 @@
 | PHONE |  | 전화번호 (양방향 암호화 필요) |
 | DEPARTMENT |  | 부서 |
 | POSITION |  | 직급 |
-| ADMIN_STATUS |  | 관리자 활성 상태 (ACTIVE활성, INACTIVE비활성) |
+| ADMIN_STATUS |  | 관리자 활성 상태 (1 : ACTIVE / 2 : INACTIVE) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
