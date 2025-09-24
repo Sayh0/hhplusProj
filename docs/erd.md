@@ -14,6 +14,7 @@
 | EMAIL |  | 이메일 주소(양방향 암호화 필요)|
 | PHONE |  | 전화번호(양방향 암호화 필요)|
 | ADDRESS |  | 주소(양방향 암호화 필요)|
+| CUSTOMER_STATUS |  | 활성상태(CODE 참조)|
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -25,7 +26,7 @@
 | CATEGORY_CODE | PK | 카테고리 코드 |
 | CATEGORY_NAME |  | 카테고리명 |
 | CATEGORY_DESCRIPTION |  | 카테고리 설명 |
-| IS_ACTIVE |  | 활성 여부 (Y, N) |
+| ACTIVE_YN |  | 활성여부 (Y, N) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -39,7 +40,7 @@
 | ITEM_NAME |  | 항목명 |
 | ITEM_DESCRIPTION |  | 항목 설명 |
 | SORT_ORDER |  | 정렬 순서 |
-| IS_ACTIVE |  | 활성 여부 (Y, N) |
+| ACTIVE_YN |  | 활성여부 (Y, N) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -51,11 +52,13 @@
 | ADMIN_ID | PK | 관리자 고유식별자 |
 | ADMIN_NAME |  | 관리자명 |
 | PASSWORD |  | 비밀번호 (단방향 암호화 필요) |
+<!-- 개인정보, 부서/직급은 추후 확장... -->
+<!-- 
 | EMAIL |  | 이메일 주소 (양방향 암호화 필요) |
 | PHONE |  | 전화번호 (양방향 암호화 필요) |
 | DEPARTMENT |  | 부서 |
-| POSITION |  | 직급 |
-| ADMIN_STATUS |  | 관리자 활성 상태 (1 : ACTIVE / 2 : INACTIVE) |
+| POSITION |  | 직급 | -->
+| ADMIN_STATUS |  | 관리자 상태 (CODE 참조) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -98,7 +101,7 @@
 |--------|------|------|
 | CUSTOMER_ID | PK, FK | 고객 ID |
 | AMOUNT |  | 사용액 |
-| USE_TYPE |  | 사용 유형 |
+| USE_TYPE |  | 사용 유형 (CODE 참조) |
 | AMOUNT_AFTER |  | 이후 잔액 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
@@ -109,7 +112,7 @@
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | CUSTOMER_ID | PK, FK | 고객 ID |
-| CART_TYPE | PK | 장바구니 유형 |
+| CART_TYPE | PK | 장바구니 유형 (CODE 참조) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -120,7 +123,7 @@
 |--------|------|------|
 | COUPON_ID | PK | 쿠폰 ID |
 | COUPON_NAME |  | 쿠폰명 |
-| COUPON_TYPE |  | 쿠폰 유형 |
+| COUPON_TYPE |  | 쿠폰 유형 (CODE 참조) |
 | COUPON_ATTRIBUE1 |  | (추가 속성) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
@@ -132,7 +135,7 @@
 |--------|------|------|
 | CUSTOMER_ID | PK, FK | 고객 ID |
 | COUPON_ID | PK, FK | 쿠폰 ID |
-| STATUS |  | 사용 상태 |
+| COUPON_STATUS |  | 상태 (CODE 참조) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -156,10 +159,8 @@
 | PRODUCT_NAME |  | 상품명 |
 | PRODUCT_PRICE |  | 상품가격 |
 | PRODUCT_STOCK |  | 재고수량 |
-| PRODUCT_STATUS |  | 활성/비활성 |
+| PRODUCT_STATUS |  | 상품 상태 (CODE 참조) | 
 | PRODUCT_DESCRIPTION |  | 상품 설명 |
-<!--DELETED 상태여부 추가 -->
-| DEL_YN |  | (논리적)삭제여부 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
@@ -196,10 +197,10 @@
 |--------|------|------|
 | ORDER_NO | PK | 주문번호 |
 | CUSTOMER_ID | FK | 고객 ID |
-| ORDER_STATUS |  | 주문 상태 (PAYMENT_PENDING결제중, PAYMENT_COMPLETED결제완료, PREPARING상품준비중, SHIPPING배송중, DELIVERED배송완료) |
+| ORDER_STATUS |  | 주문 상태 (CODE 참조) |
 | TOTAL_AMOUNT |  | 총 결제 금액 |
-| PAYMENT_METHOD |  | 결제 수단 (CARD카드, BANK_TRANSFER계좌이체, ETC기타) |
-| PAYMENT_STATUS |  | 결제 상태 (PENDING대기, COMPLETED완료, FAILED실패, CANCELLED취소됨) |
+| PAYMENT_METHOD |  | 결제 수단 (CODE 참조) |
+| PAYMENT_STATUS |  | 결제 상태 (CODE 참조) |
 | PAYMENT_DATE |  | 결제 일시 |
 | CANCEL_DATE |  | 취소 일시 |
 | DELIVERY_NAME |  | 배송지 수령인명 |
@@ -236,11 +237,11 @@
 | ORDER_NO | FK | 주문번호 |
 | CUSTOMER_ID | FK | 고객 ID |
 | PRODUCT_ID | FK | 상품 ID |
-| ACTION_TYPE |  | 액션 유형 (ORDER, CANCEL, REFUND 등) |
+| ACTION_TYPE |  | 액션 유형 (ORDER, CANCEL, REFUND 등)  (CODE 참조) |
 | QUANTITY |  | 수량 |
 | PRICE |  | 가격 |
-| STATUS_BEFORE |  | 이전 상태 |
-| STATUS_AFTER |  | 이후 상태 |
+| STATUS_BEFORE |  | 액션 이전 상태  (CODE 참조)|
+| STATUS_AFTER |  | 액션 이후 상태  (CODE 참조)|
 | REASON |  | 사유 (취소/환불 사유 등) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
@@ -261,4 +262,34 @@
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
 ---
+
+## 컬럼 명명 규칙
+
+### **YN 접미사**
+- **용도**: 단순한 Y/N 값 (Yes/No)
+- **데이터 타입**: VARCHAR(1) 또는 CHAR(1)
+- **값**: 'Y', 'N'
+- **예시**: ACTIVE_YN, DEL_YN
+- **특징**: CODE_ITEM 테이블 참조 없이 직접 값 저장
+
+### **STATUS 접미사**
+- **용도**: 복잡한 상태값 (상태 코드)
+- **데이터 타입**: VARCHAR(10) 또는 CHAR(10)
+- **값**: CODE_ITEM 테이블의 ITEM_CODE 참조
+- **예시**: ORDER_STATUS, PAYMENT_STATUS, PRODUCT_STATUS
+- **특징**: CODE_ITEM 테이블과 조인하여 상태명 조회
+
+### **명명 규칙 적용 예시**
+```sql
+-- YN 접미사 (단순 Y/N 값)
+ACTIVE_YN: 'Y' (활성), 'N' (비활성)
+DEL_YN: 'Y' (삭제됨), 'N' (정상)
+
+-- STATUS 접미사 (CODE_ITEM 참조)
+ORDER_STATUS: '1' (결제중), '2' (결제완료), '3' (상품준비중)
+PAYMENT_STATUS: '1' (대기), '2' (완료), '3' (실패)
+```
+
+---
+
 **공통 필드:** 모든 테이블에는 FIRST_INPUT_DTTM, FIRST_INPUT_ID, LAST_INPUT_DTTM, LAST_INPUT_ID가 존재하여 데이터 이력 추적에 사용됩니다.
