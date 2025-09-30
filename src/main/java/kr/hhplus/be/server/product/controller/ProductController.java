@@ -22,7 +22,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductVo>>> getAllProducts() {
-        // TODO: TDD 단계별로 구현 예정
-        return null;
+        // RED 단계: 빈 리스트를 반환
+        // return ResponseEntity.ok(ApiResponse.success(List.of()));
+        List<ProductVo> products = productService.getAllProducts();
+        return ResponseEntity.ok(ApiResponse.success(products));
     }
 }
