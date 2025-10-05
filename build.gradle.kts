@@ -32,11 +32,21 @@ dependencyManagement {
 dependencies {
     // Spring
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // MyBatis
+	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
 
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
+
+    // JSON Processing
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+
+    // Lombok
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
