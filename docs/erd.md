@@ -3,9 +3,48 @@
 본 문서는 전자상거래 플랫폼의 데이터베이스 구조를 설명합니다.  
 제약조건(PK, FK, 1:1 등)은 컬럼 옆 **제약** 열에 명시했습니다.
 
+## 목차
+
+### 1. 사용자/인증 관리
+- [CUSTOMER (고객)](#1-사용자인증-관리)
+- [ADMIN (관리자)](#1-사용자인증-관리)
+- [ADMIN_ROLE (관리자권한)](#1-사용자인증-관리)
+- [ROLE (권한)](#1-사용자인증-관리)
+
+### 2. 코드 관리
+- [CODE_CATEGORY (코드카테고리)](#2-코드-관리)
+- [CODE_ITEM (코드항목)](#2-코드-관리)
+
+### 3. 상품 관리
+- [PRODUCT (상품)](#3-상품-관리)
+- [PRODUCT_IMAGE (상품이미지)](#3-상품-관리)
+- [CATEGORY (상품유형)](#3-상품-관리)
+- [CATEGORY_PRODUCT (카테고리-상품연결)](#3-상품-관리)
+
+### 4. 주문 관리
+- [ORDER (주문)](#4-주문-관리)
+- [ORDER_ITEM (주문항목)](#4-주문-관리)
+- [ORDER_HISTORY (주문내역)](#4-주문-관리)
+
+### 5. 고객 활동 관리
+- [WALLET (잔고)](#5-고객-활동-관리)
+- [WALLET_CHARGE (잔고충전내역)](#5-고객-활동-관리)
+- [WALLET_HISTORY (잔고사용내역)](#5-고객-활동-관리)
+- [CART (장바구니)](#5-고객-활동-관리)
+- [CUSTOMER_CART_ITEM (장바구니항목)](#5-고객-활동-관리)
+
+### 6. 쿠폰 관리
+- [COUPON (쿠폰)](#6-쿠폰-관리)
+- [CUSTOMER_COUPON (고객소유쿠폰)](#6-쿠폰-관리)
+
+### 7. 기타
+- [컬럼 명명 규칙](#컬럼-명명-규칙)
+
 ---
 
-## CUSTOMER (고객)
+## 1. 사용자/인증 관리
+
+### CUSTOMER (고객)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | CUSTOMER_ID | PK | 고객 고유식별자 |
@@ -20,33 +59,7 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## CODE_CATEGORY (코드카테고리)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| CATEGORY_CODE | PK | 카테고리 코드 |
-| CATEGORY_NAME |  | 카테고리명 |
-| CATEGORY_DESCRIPTION |  | 카테고리 설명 |
-| ACTIVE_YN |  | 활성여부 (Y, N) |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
-
-## CODE_ITEM (코드항목)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| CATEGORY_CODE | PK, FK | 카테고리 코드 |
-| ITEM_CODE | PK | 항목 코드 |
-| ITEM_NAME |  | 항목명 |
-| ITEM_DESCRIPTION |  | 항목 설명 |
-| SORT_ORDER |  | 정렬 순서 |
-| ACTIVE_YN |  | 활성여부 (Y, N) |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
-
-## ADMIN (관리자)
+### ADMIN (관리자)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ADMIN_ID | PK | 관리자 고유식별자 |
@@ -64,7 +77,7 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## ADMIN_ROLE (관리자권한)
+### ADMIN_ROLE (관리자권한)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ADMIN_ID | PK, FK | 관리자 ID |
@@ -74,7 +87,7 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## ROLE (권한)
+### ROLE (권한)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ROLE_ID | PK | 권한 고유 식별자 |
@@ -85,74 +98,41 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
+---
 
-## WALLET (잔고) <span style="font-size:0.85em;">(CUSTOMER 와 1:1)</span>
+## 2. 코드 관리
+
+### CODE_CATEGORY (코드카테고리)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| CUSTOMER_ID | PK, FK | 고객 ID |
-| BALANCE |  | 현재 잔고 |
+| CATEGORY_CODE | PK | 카테고리 코드 |
+| CATEGORY_NAME |  | 카테고리명 |
+| CATEGORY_DESCRIPTION |  | 카테고리 설명 |
+| ACTIVE_YN |  | 활성여부 (Y, N) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## WALLET_HISTORY (잔고내역)
+### CODE_ITEM (코드항목)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| CUSTOMER_ID | PK, FK | 고객 ID |
-| AMOUNT |  | 사용액 |
-| USE_TYPE |  | 사용 유형 (CODE 참조) |
-| AMOUNT_AFTER |  | 이후 잔액 |
+| CATEGORY_CODE | PK, FK | 카테고리 코드 |
+| ITEM_CODE | PK | 항목 코드 |
+| ITEM_NAME |  | 항목명 |
+| ITEM_DESCRIPTION |  | 항목 설명 |
+| SORT_ORDER |  | 정렬 순서 |
+| ACTIVE_YN |  | 활성여부 (Y, N) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## CART (장바구니)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| CUSTOMER_ID | PK, FK | 고객 ID |
-| CART_TYPE | PK | 장바구니 유형 (CODE 참조) |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
+---
 
-## COUPON (쿠폰)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| COUPON_ID | PK | 쿠폰 ID |
-| COUPON_NAME |  | 쿠폰명 |
-| COUPON_TYPE |  | 쿠폰 유형 (CODE 참조) |
-| COUPON_ATTRIBUE1 |  | (추가 속성) |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
+## 3. 상품 관리
 
-## CUSTOMER_COUPON (고객소유쿠폰)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| CUSTOMER_ID | PK, FK | 고객 ID |
-| COUPON_ID | PK, FK | 쿠폰 ID |
-| COUPON_STATUS |  | 상태 (CODE 참조) |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
-
-## CUSTOMER_CART_ITEM (장바구니항목)
-| 컬럼명 | 제약 | 설명 |
-|--------|------|------|
-| CUSTOMER_ID | PK, FK | 고객 ID |
-| CART_TYPE | PK, FK | 장바구니 유형 |
-| PRODUCT_ID | PK, FK | 상품 ID |
-| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
-| FIRST_INPUT_ID |  | 최초 입력자 ID |
-| LAST_INPUT_DTTM |  | 최종 수정 일시 |
-| LAST_INPUT_ID |  | 최종 수정자 ID |
-
-## PRODUCT (상품)
+### PRODUCT (상품)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | PRODUCT_ID | PK | 상품 ID |
@@ -166,19 +146,20 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-<!--하나의 상품이 여러 유형 가질 수 있음 - 상품N:N:유형 해결 위한 중간테이블 추가-->
-## CATEGORY_PRODUCT (카테고리-상품연결)
+### PRODUCT_IMAGE (상품이미지)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| CATEGORY_ID | PK, FK | 카테고리 ID |
-| PRODUCT_ID | PK, FK | 상품 ID |
+| PRODUCT_IMAGE_ID | PK | 상품이미지 ID |
+| PRODUCT_ID | FK | 상품 ID |
+| IMAGE_URL |  | 이미지 URL |
+| IMAGE_DESCRIPTION |  | 이미지 설명 |
+| DISPLAY_ORDER |  | 표시 순서 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-<!--상품유형 마스터 테이블로 변경-->
-## CATEGORY (상품유형)
+### CATEGORY (상품유형)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | CATEGORY_ID | PK | 카테고리 ID |
@@ -191,8 +172,21 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-<!-- 주문 테이블에 결제도 통합-->
-## ORDER (주문)
+### CATEGORY_PRODUCT (카테고리-상품연결)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CATEGORY_ID | PK, FK | 카테고리 ID |
+| PRODUCT_ID | PK, FK | 상품 ID |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+---
+
+## 4. 주문 관리
+
+### ORDER (주문)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | ORDER_NO | PK | 주문번호 |
@@ -215,22 +209,20 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-<!--상품1:N이미지 관계로 변경, PK,FK개선-->
-## PRODUCT_IMAGE (상품이미지)
+### ORDER_ITEM (주문항목)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| PRODUCT_IMAGE_ID | PK | 상품이미지 ID |
-| PRODUCT_ID | FK | 상품 ID |
-| IMAGE_URL |  | 이미지 URL |
-| IMAGE_DESCRIPTION |  | 이미지 설명 |
-| DISPLAY_ORDER |  | 표시 순서 |
+| ORDER_NO | PK, FK | 주문번호 |
+| PRODUCT_ID | PK, FK | 상품 ID |
+| QUANTITY |  | 주문 수량 |
+| ORDER_PRICE |  | 단가 (주문 시점 가격) |
+| TOTAL_ORDER_PRICE |  | 총 가격 (QUANTITY × ORDER_PRICE) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-<!--고객 민원 및 오류 확인 용 테이블로 변경-->
-## ORDER_HISTORY (주문내역)
+### ORDER_HISTORY (주문내역)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
 | HISTORY_ID | PK | 이력 ID |
@@ -248,14 +240,97 @@
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
 | LAST_INPUT_ID |  | 최종 수정자 ID |
 
-## ORDER_ITEM (주문항목)
+---
+
+## 5. 고객 활동 관리
+
+### WALLET (잔고)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| ORDER_NO | PK, FK | 주문번호 |
+| CUSTOMER_ID | PK, FK | 고객 ID |
+| BALANCE |  | 현재 잔고 |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+### WALLET_CHARGE_HISTORY (잔고충전내역-사용자별 충전내역 누적 보관용 테이블)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CHARGE_ID | PK | 충전ID |
+| CUSTOMER_ID | FK | 고객 ID |
+| CHARGE_AMOUNT |  | 충전금액 |
+| PAYMENT_METHOD |  | 결제수단 (CODE 참조) |
+| PAYMENT_STATUS |  | 결제상태 (CODE 참조) |
+| BALANCE_AFTER |  | 충전 후 잔액 |
+| CHARGE_DATE |  | 충전일시 |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+### WALLET_USE_HISTORY (잔고사용내역-사용자별 사용내역 누적 보관용 테이블)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| WALLET_HISTORY_ID | PK | 잔고내역ID |
+| CUSTOMER_ID | FK | 고객 ID |
+| USE_AMOUNT |  | 사용액 |
+| USE_TYPE |  | 사용 유형 (CODE 참조) |
+| ORDER_NO | FK | 주문번호 (사용 시) |
+| BALANCE_AFTER |  | 사용 후 잔액 |
+| USE_DATE |  | 사용일시 |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+### CART (장바구니)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CUSTOMER_ID | PK, FK | 고객 ID |
+| CART_TYPE | PK | 장바구니 유형 (CODE 참조) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+### CUSTOMER_CART_ITEM (장바구니항목)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| CUSTOMER_ID | PK, FK | 고객 ID |
+| CART_TYPE | PK, FK | 장바구니 유형 |
 | PRODUCT_ID | PK, FK | 상품 ID |
-| QUANTITY |  | 주문 수량 |
-| ORDER_PRICE |  | 단가 (주문 시점 가격) |
-| TOTAL_ORDER_PRICE |  | 총 가격 (QUANTITY × ORDER_PRICE) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+---
+
+## 6. 쿠폰 관리
+
+### COUPON (쿠폰)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| COUPON_ID | PK | 쿠폰 ID |
+| COUPON_NAME |  | 쿠폰명 |
+| COUPON_TYPE |  | 쿠폰 유형 (CODE 참조) |
+| COUPON_ATTRIBUE1 |  | (추가 속성) |
+| FIRST_INPUT_DTTM |  | 최초 입력 일시 |
+| FIRST_INPUT_ID |  | 최초 입력자 ID |
+| LAST_INPUT_DTTM |  | 최종 수정 일시 |
+| LAST_INPUT_ID |  | 최종 수정자 ID |
+
+### CUSTOMER_COUPON (고객소유쿠폰)
+| 컬럼명 | 제약 | 설명 |
+|--------|------|------|
+| COUPON_NO | PK | 쿠폰번호 (고유 식별자) |
+| CUSTOMER_ID | FK | 고객 ID |
+| COUPON_ID | FK | 쿠폰 ID |
+| COUPON_STATUS |  | 상태 (CODE 참조) |
+| ISSUE_DATE |  | 발급 일시 |
+| EXPIRE_DATE |  | 만료 일시 |
+| USE_DATE |  | 사용 일시 |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
 | LAST_INPUT_DTTM |  | 최종 수정 일시 |
