@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.hhplus.be.server.wallet.mapper.WalletMapper">
+
+    <!-- 고객 잔고 조회 -->
+    <select id="findWalletByCustomerId" resultType="kr.hhplus.be.server.wallet.vo.WalletVo">
+        SELECT 
+            CUSTOMER_ID as customerId,
+            BALANCE as balance,
+            FIRST_INPUT_DTTM as firstInputDttm,
+            FIRST_INPUT_ID as firstInputId,
+            LAST_INPUT_DTTM as lastInputDttm,
+            LAST_INPUT_ID as lastInputId
+        FROM WALLET 
+        WHERE CUSTOMER_ID = #{customerId}
+    </select>
+
+    <!-- 고객 잔고 생성 (첫 충전 시) -->
+    <insert id="insertWallet">
+        INSERT INTO WALLET (
+            CUSTOMER_ID,
+            BALANCE,
+            FIRST_INPUT_DTTM,
+            FIRST_INPUT_ID,
+            LAST_INPUT_DTTM,
+            LAST_INPUT_ID
+        ) VALUES (
+            #{customerId},
+            #{balance},
+            NOW(),
+            #{firstInputId},
+            NOW(),
+            #{firstInputId}
+        )
+    </insert>
+
+    <!-- 고객 잔고 업데이트 -->
+    <update id="updateWalletBalance">
+        UPDATE WALLET 
+        SET 
+            BALANCE = #{balance},
+            LAST_INPUT_DTTM = NOW(),
+            LAST_INPUT_ID = #{lastInputId}
+        WHERE CUSTOMER_ID = #{customerId}
+    </update>
+
+    <!-- 충전 내역 저장 -->
+    <insert id="insertWalletChargeHistory">
+        INSERT INTO WALLET_CHARGE_HISTORY (
+            CUSTOMER_ID,
+            CHARGE_AMOUNT,
+            PAYMENT_METHOD,
+            PAYMENT_STATUS,
+            BALANCE_AFTER,
+            CHARGE_DATE,
+            FIRST_INPUT_DTTM,
+            FIRST_INPUT_ID,
+            LAST_INPUT_DTTM,
+            LAST_INPUT_ID
+        ) VALUES (
+            #{customerId},
+            #{chargeAmount},
+            #{paymentMethod},
+            #{paymentStatus},
+            #{balanceAfter},
+            NOW(),
+            NOW(),
+            #{firstInputId},
+            NOW(),
+            #{firstInputId}
+        )
+    </insert>
+
+    <!-- 고객 충전 내역 조회 -->
+    <select id="findWalletChargeHistoryByCustomerId" resultType="kr.hhplus.be.server.wallet.vo.WalletChargeHistoryVo">
+        SELECT 
+            CHARGE_ID as chargeId,
+            CUSTOMER_ID as customerId,
+            CHARGE_AMOUNT as chargeAmount,
+            PAYMENT_METHOD as paymentMethod,
+            PAYMENT_STATUS as paymentStatus,
+            BALANCE_AFTER as balanceAfter,
+            CHARGE_DATE as chargeDate,
+            FIRST_INPUT_DTTM as firstInputDttm,
+            FIRST_INPUT_ID as firstInputId,
+            LAST_INPUT_DTTM as lastInputDttm,
+            LAST_INPUT_ID as lastInputId
+        FROM WALLET_CHARGE_HISTORY 
+        WHERE CUSTOMER_ID = #{customerId}
+        ORDER BY CHARGE_DATE DESC
+    </select>
+
+</mapper>
