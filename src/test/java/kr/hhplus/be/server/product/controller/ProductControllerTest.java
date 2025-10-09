@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.hhplus.be.server.common.ApiResponse;
 import kr.hhplus.be.server.product.service.ProductService;
 import kr.hhplus.be.server.product.vo.ProductVo;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +17,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * ProductController 테스트
+ */
 @WebMvcTest(ProductController.class)
 class ProductControllerTest {
 
@@ -30,6 +32,9 @@ class ProductControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * 상품 목록 조회 성공 테스트
+     */
     @Test
     @DisplayName("상품 목록 조회 API - 성공 케이스")
     void getAllProducts_Success() throws Exception {
@@ -68,6 +73,9 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.data[1].productPrice").value(80000));
     }
 
+    /**
+     * 상품 목록 조회 빈 목록 테스트
+     */
     @Test
     @DisplayName("상품 목록 조회 API - 빈 목록 케이스")
     void getAllProducts_EmptyList() throws Exception {

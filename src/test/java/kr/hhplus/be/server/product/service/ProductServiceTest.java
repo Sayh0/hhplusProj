@@ -16,17 +16,15 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-// Mockito 프레임워크를 사용하기 위한 설정
-// Mockito는 가짜 객체(Mock)를 만들어주는 도구
-// 나중에 Repository/Mapper 같은 의존성을 가짜로 만들어서 테스트할 때 사용
+/**
+ * ProductService 테스트
+ */
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
-    // 서비스가 의존하는 Mapper를 목으로 준비
     @Mock
     private ProductMapper productMapper;
 
-    // @InjectMocks: 테스트하고자 하는 실제 객체를 생성, 위의 @Mock 들을 주입
     @InjectMocks
     private ProductService productService;
 
@@ -34,7 +32,10 @@ class ProductServiceTest {
     void setUp() {
         // 각 테스트 전에 실행되는 초기화 코드
     }
-    // Given-When-Then 패턴
+
+    /**
+     * 상품 목록 조회 성공 테스트
+     */
     @Test
     @DisplayName("상품 목록 조회 - 성공")
     void getAllProducts_ReturnsListFromMapper() {
@@ -73,6 +74,9 @@ class ProductServiceTest {
             });
     }
 
+    /**
+     * 상품 목록 조회 빈 목록 테스트
+     */
     @Test
     @DisplayName("상품 목록 조회 - 빈 목록이면 그대로 반환")
     void getAllProducts_ReturnsEmptyList() {

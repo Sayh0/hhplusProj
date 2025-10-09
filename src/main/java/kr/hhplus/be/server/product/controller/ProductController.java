@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 상품 관련 API 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -20,6 +23,9 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /**
+     * 전체 상품 목록 조회
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<ProductVo>>> getAllProducts() {
         // RED 단계: 빈 리스트를 반환
