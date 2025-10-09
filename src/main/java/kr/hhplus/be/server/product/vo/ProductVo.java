@@ -2,16 +2,14 @@ package kr.hhplus.be.server.product.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProductVo {
-    private Long productId;
-    private String productName;
-    private Long productPrice;
-    private Integer productStock;
-    private String productStatus;
-    private String productDescription;
+public final class ProductVo {
+    private final Long productId;
+    private final String productName;
+    private final Long productPrice;
+    private final Integer productStock;
+    private final String productStatus;
+    private final String productDescription;
 }

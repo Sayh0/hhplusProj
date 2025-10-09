@@ -13,12 +13,12 @@ import java.time.format.DateTimeFormatter;
  */
 @Getter
 @AllArgsConstructor
-public class ApiResponse<T> {
+public final class ApiResponse<T> {
     
-    private boolean success;  // 성공 여부
-    private T data;          // 응답 데이터
-    private Error error;     // 에러 정보
-    private String timestamp; // 응답 시간
+    private final boolean success;  // 성공 여부
+    private final T data;          // 응답 데이터
+    private final Error error;     // 에러 정보
+    private final String timestamp; // 응답 시간
 
     /**
      * 성공 응답 생성
