@@ -149,29 +149,64 @@ Closes #123
 ## 코드 스타일
 
 ### Java 코딩 컨벤션
-- JavaDoc 주석 사용 필수
-- 클래스, 메서드, 필드에 대한 설명 포함
 - 표준 Java 네이밍 컨벤션 준수
+- JavaDoc 주석 작성 (필수 대상에 한정)
 
-### 예시
+### JavaDoc 작성 가이드
+
+#### 필수 작성 대상
+- **공통 유틸리티 클래스** (ApiResponse, Error 등)
+- **복잡한 비즈니스 로직** 메서드
+- **외부 API** 인터페이스
+- **라이브러리** 코드
+
+#### 작성하지 않아도 되는 경우
+- **단순한 VO/DTO** 클래스
+- **명확한 변수명** (success, data 등)
+- **Getter/Setter** 메서드
+- **단순한 생성자**
+
+#### JavaDoc 작성 규칙
+
+**클래스 레벨:**
 ```java
 /**
- * 상품 정보를 관리하는 서비스 클래스
+ * API 공통 응답 클래스
  * 
- * @author 개발자명
- * @since 2024-12-29
+ * @param <T> 응답 데이터의 타입
  */
-public class ProductService {
-    
-    /**
-     * 상품 ID로 상품 정보를 조회합니다.
-     * 
-     * @param productId 조회할 상품 ID
-     * @return 상품 정보 (없으면 null)
-     */
-    public ProductVo getProductById(Long productId) {
-        // 구현
-    }
+public class ApiResponse<T> {
+    // ...
+}
+```
+
+**메서드 레벨:**
+```java
+/**
+ * 성공 응답 생성
+ */
+public static <T> ApiResponse<T> success(T data) {
+    // ...
+}
+
+/**
+ * 사용자 정보를 조회합니다.
+ * 
+ * @param userId 사용자 ID
+ * @return 사용자 정보
+ * @throws UserNotFoundException 사용자를 찾을 수 없는 경우
+ */
+public User getUser(Long userId) {
+    // ...
+}
+```
+
+**필드 레벨 (인라인 주석):**
+```java
+public class ApiResponse<T> {
+    private boolean success;  // 성공 여부
+    private T data;          // 응답 데이터
+    private Error error;     // 에러 정보
 }
 ```
 
