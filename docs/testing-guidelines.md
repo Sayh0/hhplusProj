@@ -55,7 +55,7 @@ void shouldThrowExceptionWhenCustomerIdIsNull() {
 - **When**: 테스트 조건을 명확하게 표현
 - **상황**: 구체적인 조건 설명
 
-## 3. 테스트 우선순위 (실무 기준)
+## 3. 테스트 우선순위
 
 ### 🔥 필수 (1순위)
 1. **Null 체크** - NullPointerException 방지
