@@ -6,36 +6,36 @@
 ## 목차
 
 ### 1. 사용자/인증 관리
-- [CUSTOMER (고객)](#1-사용자인증-관리)
-- [ADMIN (관리자)](#1-사용자인증-관리)
-- [ADMIN_ROLE (관리자권한)](#1-사용자인증-관리)
-- [ROLE (권한)](#1-사용자인증-관리)
+- [CUSTOMER (고객)](#customer-고객)
+- [ADMIN (관리자)](#admin-관리자)
+- [ADMIN_ROLE (관리자권한)](#admin_role-관리자권한)
+- [ROLE (권한)](#role-권한)
 
 ### 2. 코드 관리
-- [CODE_CATEGORY (코드카테고리)](#2-코드-관리)
-- [CODE_ITEM (코드항목)](#2-코드-관리)
+- [CODE_CATEGORY (코드카테고리)](#code_category-코드카테고리)
+- [CODE_ITEM (코드항목)](#code_item-코드항목)
 
 ### 3. 상품 관리
-- [PRODUCT (상품)](#3-상품-관리)
-- [PRODUCT_IMAGE (상품이미지)](#3-상품-관리)
-- [CATEGORY (상품유형)](#3-상품-관리)
-- [CATEGORY_PRODUCT (카테고리-상품연결)](#3-상품-관리)
+- [PRODUCT (상품)](#product-상품)
+- [PRODUCT_IMAGE (상품이미지)](#product_image-상품이미지)
+- [CATEGORY (상품유형)](#category-상품유형)
+- [CATEGORY_PRODUCT (카테고리-상품연결)](#category_product-카테고리-상품연결)
 
 ### 4. 주문 관리
-- [ORDER (주문)](#4-주문-관리)
-- [ORDER_ITEM (주문항목)](#4-주문-관리)
-- [ORDER_HISTORY (주문내역)](#4-주문-관리)
+- [ORDER (주문)](#order-주문)
+- [ORDER_ITEM (주문항목)](#order_item-주문항목)
+- [ORDER_HISTORY (주문내역)](#order_history-주문내역)
 
 ### 5. 고객 활동 관리
-- [WALLET (잔고)](#5-고객-활동-관리)
-- [WALLET_CHARGE (잔고충전내역)](#5-고객-활동-관리)
-- [WALLET_HISTORY (잔고사용내역)](#5-고객-활동-관리)
-- [CART (장바구니)](#5-고객-활동-관리)
-- [CUSTOMER_CART_ITEM (장바구니항목)](#5-고객-활동-관리)
+- [WALLET (잔고)](#wallet-잔고)
+- [WALLET_CHARGE_HISTORY (잔고충전내역)](#wallet_charge_history-잔고충전내역-사용자별-충전내역-누적-보관용-테이블)
+- [WALLET_USE_HISTORY (잔고사용내역)](#wallet_use_history-잔고사용내역-사용자별-사용내역-누적-보관용-테이블)
+- [CART (장바구니)](#cart-장바구니)
+- [CUSTOMER_CART_ITEM (장바구니항목)](#customer_cart_item-장바구니항목)
 
 ### 6. 쿠폰 관리
-- [COUPON (쿠폰)](#6-쿠폰-관리)
-- [CUSTOMER_COUPON (고객소유쿠폰)](#6-쿠폰-관리)
+- [COUPON (쿠폰)](#coupon-쿠폰)
+- [CUSTOMER_COUPON (고객소유쿠폰)](#customer_coupon-고객소유쿠폰)
 
 ### 7. 기타
 - [컬럼 명명 규칙](#컬럼-명명-규칙)
@@ -193,6 +193,8 @@
 | CUSTOMER_ID | FK | 고객 ID |
 | ORDER_STATUS |  | 주문 상태 (CODE 참조) |
 | TOTAL_AMOUNT |  | 총 결제 금액 |
+| CUSTOMER_COUPON_NO | FK | 사용된 고객쿠폰번호 (NULL 허용) |
+| DISCOUNT_AMOUNT |  | 쿠폰 할인 금액 |
 | PAYMENT_METHOD |  | 결제 수단 (CODE 참조) |
 | PAYMENT_STATUS |  | 결제 상태 (CODE 참조) |
 | PAYMENT_DATE |  | 결제 일시 |
@@ -324,7 +326,7 @@
 ### CUSTOMER_COUPON (고객소유쿠폰)
 | 컬럼명 | 제약 | 설명 |
 |--------|------|------|
-| COUPON_NO | PK | 쿠폰번호 (고유 식별자) |
+| CUSTOMER_COUPON_NO | PK | 쿠폰번호 (고유 식별자) |
 | CUSTOMER_ID | FK | 고객 ID |
 | COUPON_ID | FK | 쿠폰 ID |
 | COUPON_STATUS |  | 상태 (CODE 참조) |
