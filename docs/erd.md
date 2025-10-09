@@ -65,12 +65,6 @@
 | ADMIN_ID | PK | 관리자 고유식별자 |
 | ADMIN_NAME |  | 관리자명 |
 | PASSWORD |  | 비밀번호 (단방향 암호화 필요) |
-<!-- 개인정보, 부서/직급은 추후 확장... -->
-<!-- 
-| EMAIL |  | 이메일 주소 (양방향 암호화 필요) |
-| PHONE |  | 전화번호 (양방향 암호화 필요) |
-| DEPARTMENT |  | 부서 |
-| POSITION |  | 직급 | -->
 | ADMIN_STATUS |  | 관리자 상태 (CODE 참조) |
 | FIRST_INPUT_DTTM |  | 최초 입력 일시 |
 | FIRST_INPUT_ID |  | 최초 입력자 ID |
