@@ -42,12 +42,16 @@ class ProductServiceTest {
         // Given: Mapper가 반환할 가짜 데이터 세팅
         List<ProductVo> mocked = List.of(
                 new ProductVo(
-                    1L
-                    , "마우스"
-                    , 15000L
-                    , 10
-                    , "ON_SALE"
-                    , "게이밍 마우스"
+                    1L,                    // productId
+                    "마우스",              // productName
+                    15000L,                // productPrice
+                    10,                    // productStock
+                    "ON_SALE",             // productStatus
+                    "게이밍 마우스",        // productDescription
+                    "2024-01-01 10:00:00", // firstInputDttm
+                    "SYSTEM",              // firstInputId
+                    "2024-01-01 10:00:00", // lastInputDttm
+                    "SYSTEM"               // lastInputId
                 )
         );
         // When-1: Mapper가 반환할 가짜 데이터를 정의
