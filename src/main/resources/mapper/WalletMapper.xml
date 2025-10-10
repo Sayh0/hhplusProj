@@ -45,8 +45,8 @@
         WHERE CUSTOMER_ID = #{customerId}
     </update>
 
-    <!-- 충전 내역 저장 -->
-    <insert id="insertWalletChargeHistory">
+ <!-- 포인트 충전 내역 저장 -->
+    <insert id="insertWalletChargeHistory" parameterType="kr.hhplus.be.server.wallet.vo.WalletChargeHistoryVo">
         INSERT INTO WALLET_CHARGE_HISTORY (
             CUSTOMER_ID,
             CHARGE_AMOUNT,
@@ -64,11 +64,11 @@
             #{paymentMethod},
             #{paymentStatus},
             #{balanceAfter},
-            NOW(),
-            NOW(),
+            #{chargeDate},
+            #{firstInputDttm},
             #{firstInputId},
-            NOW(),
-            #{firstInputId}
+            #{lastInputDttm},
+            #{lastInputId}
         )
     </insert>
 

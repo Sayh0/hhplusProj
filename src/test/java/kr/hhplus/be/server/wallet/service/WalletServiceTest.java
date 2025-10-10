@@ -2,8 +2,11 @@ package kr.hhplus.be.server.wallet.service;
 
 import kr.hhplus.be.server.customer.service.CustomerService;
 import kr.hhplus.be.server.wallet.mapper.WalletMapper;
+import kr.hhplus.be.server.wallet.vo.WalletChargeHistoryVo;
 import kr.hhplus.be.server.wallet.vo.WalletChargeRequestVo;
 import kr.hhplus.be.server.wallet.vo.WalletChargeResponseVo;
+import kr.hhplus.be.server.wallet.vo.WalletVo;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
@@ -26,7 +30,7 @@ class WalletServiceTest {
 
     @Mock
     private WalletMapper walletMapper;
-    
+
     @Mock
     private CustomerService customerService;
 
@@ -40,19 +44,19 @@ class WalletServiceTest {
 
     /*
      * ## 3. 테스트 우선순위
-        ### 🔥 필수 (1순위)
-        1. **Null 체크** - NullPointerException 방지
-        2. **빈 값 체크** - 빈 문자열로 인한 비즈니스 로직 오류 방지
-        3. **음수/0 체크** - 비즈니스 규칙 위반 방지
-        ### ⚡ 권장 (2순위)
-        4. **범위 초과 체크** - 시스템 안정성, 보안
-        5. **존재하지 않는 리소스** - 데이터 일관성, 외래키 제약
-        + 추가 : insert/ update 유효성 테스트
+     * ### 🔥 필수 (1순위)
+     * 1. **Null 체크** - NullPointerException 방지
+     * 2. **빈 값 체크** - 빈 문자열로 인한 비즈니스 로직 오류 방지
+     * 3. **음수/0 체크** - 비즈니스 규칙 위반 방지
+     * ### ⚡ 권장 (2순위)
+     * 4. **범위 초과 체크** - 시스템 안정성, 보안
+     * 5. **존재하지 않는 리소스** - 데이터 일관성, 외래키 제약
+     * + 추가 : insert/ update 유효성 테스트
      *
      */
 
-     /**
-      * 고객ID null 일 시 잔고 조회 실패 테스트
+    /**
+     * 고객ID null 일 시 잔고 조회 실패 테스트
      */
     @Test
     @DisplayName("고객ID null 일 시 잔고 조회 실패")
@@ -62,12 +66,12 @@ class WalletServiceTest {
 
         // When: 테스트 실행
         assertThatThrownBy(() -> walletService.findWalletByCustomerId(customerId))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("고객 ID는 필수입니다");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("고객 ID는 필수입니다");
     }
     // 고객 Id가 null 이거나 빈 값 혹은 공백인 경우는?
     // ㄴcustomerId는 Long 타입이므로 빈 값이나 공백은 없음.
-    
+
     /**
      * 결제수단이 빈 문자열일 시 포인트 충전 실패 테스트
      */
@@ -79,8 +83,8 @@ class WalletServiceTest {
 
         // When: 테스트 실행
         assertThatThrownBy(() -> walletService.chargePoint(request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("결제 수단은 필수입니다");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("결제 수단은 필수입니다");
     }
 
     /**
@@ -94,8 +98,8 @@ class WalletServiceTest {
 
         // When: 테스트 실행
         assertThatThrownBy(() -> walletService.chargePoint(request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("충전 금액은 0보다 커야 합니다");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("충전 금액은 0보다 커야 합니다");
     }
 
     /**
@@ -109,8 +113,8 @@ class WalletServiceTest {
 
         // When: 테스트 실행
         assertThatThrownBy(() -> walletService.chargePoint(request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("충전 금액은 0보다 커야 합니다");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("충전 금액은 0보다 커야 합니다");
     }
 
     /**
@@ -121,14 +125,14 @@ class WalletServiceTest {
     void shouldThrowExceptionWhenCustomerDoesNotExist() {
         // Given: 테스트 데이터 준비
         WalletChargeRequestVo request = new WalletChargeRequestVo(999L, 10000L, "CARD");
-        
+
         // Mock 설정: 존재하지 않는 고객
         when(customerService.existsCustomer(999L)).thenReturn(false);
 
         // When: 테스트 실행
         assertThatThrownBy(() -> walletService.chargePoint(request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재하지 않는 고객입니다");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 고객입니다");
     }
 
     /**
@@ -149,5 +153,38 @@ class WalletServiceTest {
         // Then: 새 잔고 생성 확인
         verify(walletMapper).insertWallet(any(), any(), any());
         verify(walletMapper, never()).updateWalletBalance(any(), any(), any());
+
+        // 추가: 충전 내역 저장 확인
+        verify(walletMapper).insertWalletChargeHistory(any(WalletChargeHistoryVo.class));
+    }
+
+    /**
+     * 기존 잔고가 있으면 업데이트하는 테스트
+     */
+    @Test
+    @DisplayName("기존 잔고가 있으면 업데이트")
+    void shouldUpdateExistingWalletWhenWalletExists() {
+        // Given: 기존 잔고가 있는 상황
+        WalletChargeRequestVo request = new WalletChargeRequestVo(1L, 10000L, "CARD");
+        WalletVo existingWallet = new WalletVo(1L, 5000L, "2024-01-01 10:00:00", "SYSTEM", "2024-01-01 10:00:00",
+                "SYSTEM");
+
+        when(customerService.existsCustomer(1L)).thenReturn(true);
+        when(walletMapper.findWalletByCustomerId(1L)).thenReturn(existingWallet);
+
+        // When: 포인트 충전
+        WalletChargeResponseVo result = walletService.chargePoint(request);
+
+        // Then: 기존 잔고 업데이트 확인
+        verify(walletMapper, never()).insertWallet(any(), any(), any());
+        verify(walletMapper).updateWalletBalance(any(), any(), any());
+
+        // 추가: 충전 내역 저장 확인
+        verify(walletMapper).insertWalletChargeHistory(any(WalletChargeHistoryVo.class));
+
+        // 추가: 결과 검증
+        assertThat(result.getCustomerId()).isEqualTo(1L);
+        assertThat(result.getChargeAmount()).isEqualTo(10000L);
+        assertThat(result.getBalanceAfter()).isEqualTo(15000L); // 5000 + 10000
     }
 }

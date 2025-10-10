@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.wallet.mapper;
 
+import kr.hhplus.be.server.wallet.vo.WalletChargeHistoryVo;
 import kr.hhplus.be.server.wallet.vo.WalletVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,22 +10,27 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface WalletMapper {
-    
+
     /**
      * 고객 잔고 조회
      */
     WalletVo findWalletByCustomerId(@Param("customerId") Long customerId);
-    
+
     /**
      * 잔고 생성 (첫 충전 시)
      */
-    void insertWallet(@Param("customerId") Long customerId, @Param("balance") Long balance, 
-                      @Param("firstInputId") String firstInputId);
-    
+    void insertWallet(@Param("customerId") Long customerId, @Param("balance") Long balance,
+            @Param("firstInputId") String firstInputId);
+
     /**
      * 잔고 업데이트
      */
-    void updateWalletBalance(@Param("customerId") Long customerId, @Param("balance") Long balance, 
-                             @Param("lastInputId") String lastInputId);
-    
+    void updateWalletBalance(@Param("customerId") Long customerId, @Param("balance") Long balance,
+            @Param("lastInputId") String lastInputId);
+
+    /**
+     * 충전 내역 저장
+     */
+    void insertWalletChargeHistory(@Param("history") WalletChargeHistoryVo history);
+
 }
