@@ -15,19 +15,13 @@ public class OrderItemRequest {
         if (productId == null) {
             throw new IllegalArgumentException("상품ID는 필수입니다.");
         }
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("상품명은 필수입니다.");
-        }
         if (quantity <= 0) {
             throw new IllegalArgumentException("수량은 1 이상이어야 합니다.");
         }
-        if (unitPrice <= 0) {
-            throw new IllegalArgumentException("단가는 1 이상이어야 합니다.");
-        }
 
         this.productId = productId;
-        this.name = name;
+        this.name = name; // null 허용
         this.quantity = quantity;
-        this.unitPrice = unitPrice;
+        this.unitPrice = unitPrice; // 0 허용
     }
 }

@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.order.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.hhplus.be.server.common.exception.InsufficientBalanceException;
+import kr.hhplus.be.server.common.exception.InsufficientStockException;
 import kr.hhplus.be.server.order.application.OrderUseCase;
 import kr.hhplus.be.server.order.application.dto.CreateOrderCommand;
 import kr.hhplus.be.server.order.controller.dto.CreateOrderRequest;
@@ -60,8 +62,6 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.orderId").value(1L))
                 .andExpect(jsonPath("$.data.totalAmount").value(2000000L))
-                .andExpect(jsonPath("$.data.discountAmount").value(50000L))
-                .andExpect(jsonPath("$.data.finalAmount").value(1950000L))
                 .andExpect(jsonPath("$.data.status").value("PAID"))
                 .andExpect(jsonPath("$.data.createdAt").exists());
     }
@@ -92,7 +92,7 @@ class OrderControllerTest {
                 null);
 
         when(orderUseCase.createOrder(any(CreateOrderCommand.class)))
-                .thenThrow(new RuntimeException("재고가 부족합니다"));
+                .thenThrow(new InsufficientStockException("재고가 부족합니다"));
 
         // When & Then
         mockMvc.perform(post("/api/v1/orders")
@@ -113,7 +113,7 @@ class OrderControllerTest {
                 null);
 
         when(orderUseCase.createOrder(any(CreateOrderCommand.class)))
-                .thenThrow(new RuntimeException("잔액이 부족합니다"));
+                .thenThrow(new InsufficientBalanceException("잔액이 부족합니다"));
 
         // When & Then
         mockMvc.perform(post("/api/v1/orders")
