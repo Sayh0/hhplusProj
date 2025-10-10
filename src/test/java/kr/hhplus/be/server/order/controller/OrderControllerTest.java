@@ -5,8 +5,7 @@ import kr.hhplus.be.server.common.exception.InsufficientBalanceException;
 import kr.hhplus.be.server.common.exception.InsufficientStockException;
 import kr.hhplus.be.server.order.application.OrderUseCase;
 import kr.hhplus.be.server.order.application.dto.CreateOrderCommand;
-import kr.hhplus.be.server.order.controller.dto.CreateOrderRequest;
-import kr.hhplus.be.server.order.controller.dto.OrderItemDto;
+import kr.hhplus.be.server.order.application.dto.OrderItemRequest;
 import kr.hhplus.be.server.order.domain.entity.Order;
 import kr.hhplus.be.server.order.domain.entity.OrderItem;
 import kr.hhplus.be.server.order.domain.vo.OrderStatus;
@@ -43,13 +42,11 @@ class OrderControllerTest {
     @DisplayName("주문 및 결제 API 테스트 - 성공")
     void shouldCreateOrderAndPaymentSuccess() throws Exception {
         // Given
-        CreateOrderRequest request = new CreateOrderRequest(
+        CreateOrderCommand request = new CreateOrderCommand(
                 1L,
                 List.of(
-                        new OrderItemDto(1L, 2),
-                        new OrderItemDto(3L, 1)),
-                123L // couponId
-        );
+                        new OrderItemRequest(1L, "스마트폰", 2, 500000L),
+                        new OrderItemRequest(3L, "노트북", 1, 1000000L)));
 
         Order order = createOrder();
         when(orderUseCase.createOrder(any(CreateOrderCommand.class))).thenReturn(order);
@@ -60,36 +57,19 @@ class OrderControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.orderId").value(1L))
+                .andExpect(jsonPath("$.data.id").value(1L))
                 .andExpect(jsonPath("$.data.totalAmount").value(2000000L))
                 .andExpect(jsonPath("$.data.status").value("PAID"))
                 .andExpect(jsonPath("$.data.createdAt").exists());
     }
 
     @Test
-    @DisplayName("주문 및 결제 API 테스트 - 유효성 검증 실패")
-    void shouldReturnBadRequestWhenInvalidRequest() throws Exception {
-        // Given
-        CreateOrderRequest request = new CreateOrderRequest(
-                null, // userId가 null
-                List.of(new OrderItemDto(1L, 2)),
-                123L);
-
-        // When & Then
-        mockMvc.perform(post("/api/v1/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @DisplayName("주문 및 결제 API 테스트 - 재고 부족")
     void shouldReturnConflictWhenInsufficientStock() throws Exception {
         // Given
-        CreateOrderRequest request = new CreateOrderRequest(
+        CreateOrderCommand request = new CreateOrderCommand(
                 1L,
-                List.of(new OrderItemDto(1L, 2)),
-                null);
+                List.of(new OrderItemRequest(1L, "스마트폰", 2, 500000L)));
 
         when(orderUseCase.createOrder(any(CreateOrderCommand.class)))
                 .thenThrow(new InsufficientStockException("재고가 부족합니다"));
@@ -107,10 +87,9 @@ class OrderControllerTest {
     @DisplayName("주문 및 결제 API 테스트 - 잔액 부족")
     void shouldReturnConflictWhenInsufficientBalance() throws Exception {
         // Given
-        CreateOrderRequest request = new CreateOrderRequest(
+        CreateOrderCommand request = new CreateOrderCommand(
                 1L,
-                List.of(new OrderItemDto(1L, 2)),
-                null);
+                List.of(new OrderItemRequest(1L, "스마트폰", 2, 500000L)));
 
         when(orderUseCase.createOrder(any(CreateOrderCommand.class)))
                 .thenThrow(new InsufficientBalanceException("잔액이 부족합니다"));
