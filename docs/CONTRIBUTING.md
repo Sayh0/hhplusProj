@@ -239,6 +239,44 @@ public class ApiResponse<T> {
 }
 ```
 
+### 테스트 작성 가이드
+
+#### 테스트 명명 규칙
+
+```
+should[예상결과]When[상황]
+```
+
+**예시:**
+
+-   `shouldReturnSuccessWhenValidRequest()`
+-   `shouldThrowExceptionWhenInvalidInput()`
+-   `shouldUpdateBalanceWhenChargeAmount()`
+
+#### 테스트 구조
+
+```java
+@Test
+void shouldReturnSuccessWhenValidRequest() {
+    // Given
+    // When
+    // Then
+}
+```
+
+### API 응답 구조
+
+모든 API는 `ApiResponse<T>` 형태로 응답합니다:
+
+```java
+{
+    "success": true,
+    "data": { ... },
+    "error": null,
+    "timestamp": "2024-01-01T00:00:00Z"
+}
+```
+
 ---
 
 이 가이드라인을 따라 일관된 개발 환경을 유지해주세요.
