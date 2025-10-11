@@ -199,29 +199,30 @@
 
 ### ORDER (주문)
 
-| 컬럼명               | 제약 | 설명                            |
-| -------------------- | ---- | ------------------------------- |
-| ORDER_NO             | PK   | 주문번호                        |
-| CUSTOMER_ID          | FK   | 고객 ID                         |
-| ORDER_STATUS         |      | 주문 상태 (CODE 참조)           |
-| TOTAL_AMOUNT         |      | 총 결제 금액                    |
-| CUSTOMER_COUPON_NO   | FK   | 사용된 고객쿠폰번호 (NULL 허용) |
-| DISCOUNT_AMOUNT      |      | 쿠폰 할인 금액                  |
-| PAYMENT_METHOD       |      | 결제 수단 (CODE 참조)           |
-| PAYMENT_STATUS       |      | 결제 상태 (CODE 참조)           |
-| PAYMENT_DATE         |      | 결제 일시                       |
-| CANCEL_DATE          |      | 취소 일시                       |
-| DELIVERY_NAME        |      | 배송지 수령인명                 |
-| DELIVERY_PHONE       |      | 배송지 연락처                   |
-| DELIVERY_ADDRESS     |      | 배송지 주소                     |
-| DELIVERY_ZIPCODE     |      | 배송지 우편번호                 |
-| DELIVERY_DESCRIPTION |      | 배송 설명                       |
-| ORDER_DATE           |      | 주문 일시                       |
-| DELIVERY_DATE        |      | 배송 완료 일시                  |
-| FIRST_INPUT_DTTM     |      | 최초 입력 일시                  |
-| FIRST_INPUT_ID       |      | 최초 입력자 ID                  |
-| LAST_INPUT_DTTM      |      | 최종 수정 일시                  |
-| LAST_INPUT_ID        |      | 최종 수정자 ID                  |
+| 컬럼명               | 제약 | 설명                             |
+| -------------------- | ---- | -------------------------------- |
+| ORDER_NO             | PK   | 주문번호                         |
+| CUSTOMER_ID          | FK   | 고객 ID                          |
+| ORDER_STATUS         |      | 주문 상태 (CODE 참조)            |
+| ORIGINAL_AMOUNT      |      | 할인 전 원래 주문 금액           |
+| DISCOUNT_AMOUNT      |      | 쿠폰 할인 금액                   |
+| TOTAL_AMOUNT         |      | 총 결제 금액 (할인 후 최종 금액) |
+| CUSTOMER_COUPON_NO   | FK   | 사용된 고객쿠폰번호 (NULL 허용)  |
+| PAYMENT_METHOD       |      | 결제 수단 (CODE 참조)            |
+| PAYMENT_STATUS       |      | 결제 상태 (CODE 참조)            |
+| PAYMENT_DATE         |      | 결제 일시                        |
+| CANCEL_DATE          |      | 취소 일시                        |
+| DELIVERY_NAME        |      | 배송지 수령인명                  |
+| DELIVERY_PHONE       |      | 배송지 연락처                    |
+| DELIVERY_ADDRESS     |      | 배송지 주소                      |
+| DELIVERY_ZIPCODE     |      | 배송지 우편번호                  |
+| DELIVERY_DESCRIPTION |      | 배송 설명                        |
+| ORDER_DATE           |      | 주문 일시                        |
+| DELIVERY_DATE        |      | 배송 완료 일시                   |
+| FIRST_INPUT_DTTM     |      | 최초 입력 일시                   |
+| FIRST_INPUT_ID       |      | 최초 입력자 ID                   |
+| LAST_INPUT_DTTM      |      | 최종 수정 일시                   |
+| LAST_INPUT_ID        |      | 최종 수정자 ID                   |
 
 ### ORDER_ITEM (주문항목)
 
@@ -332,16 +333,19 @@
 
 ### COUPON (쿠폰)
 
-| 컬럼명           | 제약 | 설명                  |
-| ---------------- | ---- | --------------------- |
-| COUPON_ID        | PK   | 쿠폰 ID               |
-| COUPON_NAME      |      | 쿠폰명                |
-| COUPON_TYPE      |      | 쿠폰 유형 (CODE 참조) |
-| COUPON_ATTRIBUE1 |      | (추가 속성)           |
-| FIRST_INPUT_DTTM |      | 최초 입력 일시        |
-| FIRST_INPUT_ID   |      | 최초 입력자 ID        |
-| LAST_INPUT_DTTM  |      | 최종 수정 일시        |
-| LAST_INPUT_ID    |      | 최종 수정자 ID        |
+| 컬럼명              | 제약 | 설명                                                  |
+| ------------------- | ---- | ----------------------------------------------------- |
+| COUPON_ID           | PK   | 쿠폰 ID                                               |
+| COUPON_NAME         |      | 쿠폰명                                                |
+| COUPON_TYPE         |      | 쿠폰 유형 (CODE 참조)                                 |
+| DISCOUNT_TYPE       |      | 할인 타입 (FIXED_AMOUNT, PERCENTAGE)                  |
+| DISCOUNT_VALUE      |      | 할인 값 (고정금액이면 금액, 비율이면 퍼센트)          |
+| MIN_ORDER_AMOUNT    |      | 최소 주문 금액 (이 금액 이상 주문해야 쿠폰 사용 가능) |
+| MAX_DISCOUNT_AMOUNT |      | 최대 할인 금액 (비율 할인 시 상한선)                  |
+| FIRST_INPUT_DTTM    |      | 최초 입력 일시                                        |
+| FIRST_INPUT_ID      |      | 최초 입력자 ID                                        |
+| LAST_INPUT_DTTM     |      | 최종 수정 일시                                        |
+| LAST_INPUT_ID       |      | 최종 수정자 ID                                        |
 
 ### CUSTOMER_COUPON (고객소유쿠폰)
 
