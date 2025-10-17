@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.hhplus.be.server.coupon.infrastructure.mapper.CouponMapper">
+
+    <!-- Coupon 테이블 매핑 -->
+    <resultMap id="CouponResultMap" type="kr.hhplus.be.server.coupon.infrastructure.vo.CouponVo">
+        <id property="couponId" column="coupon_id"/>
+        <result property="couponName" column="coupon_name"/>
+        <result property="couponType" column="coupon_type"/>
+        <result property="discountType" column="discount_type"/>
+        <result property="discountValue" column="discount_value"/>
+        <result property="minOrderAmount" column="min_order_amount"/>
+        <result property="maxDiscountAmount" column="max_discount_amount"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 쿠폰 ID로 쿠폰 조회 -->
+    <select id="selectCouponById" parameterType="long" resultMap="CouponResultMap">
+        SELECT coupon_id, coupon_name, coupon_type, discount_type, discount_value,
+               min_order_amount, max_discount_amount, created_at, updated_at
+        FROM coupon
+        WHERE coupon_id = #{couponId}
+    </select>
+
+</mapper>
+

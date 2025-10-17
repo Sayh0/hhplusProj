@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.hhplus.be.server.order.infrastructure.mapper.OrderMapper">
+
+    <!-- Order 테이블 매핑 -->
+    <resultMap id="OrderResultMap" type="kr.hhplus.be.server.order.infrastructure.dto.OrderVo">
+        <id property="id" column="id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="status" column="status"/>
+        <result property="originalAmount" column="original_amount"/>
+        <result property="discountAmount" column="discount_amount"/>
+        <result property="customerCouponNo" column="customer_coupon_no"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <collection property="items" ofType="kr.hhplus.be.server.order.infrastructure.dto.OrderItemVo"
+                    select="selectOrderItemsByOrderId" column="id"/>
+    </resultMap>
+
+    <!-- OrderItem 테이블 매핑 -->
+    <resultMap id="OrderItemResultMap" type="kr.hhplus.be.server.order.infrastructure.dto.OrderItemVo">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="name" column="name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="totalPrice" column="total_price"/>
+    </resultMap>
+
+    <!-- 주문 저장 -->
+    <insert id="insertOrder" parameterType="kr.hhplus.be.server.order.infrastructure.dto.OrderVo"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at)
+        VALUES (#{orderNo}, #{customerId}, #{status}, #{originalAmount}, #{discountAmount}, #{customerCouponNo}, #{totalAmount}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <!-- 주문 항목 저장 -->
+    <insert id="insertOrderItem" parameterType="kr.hhplus.be.server.order.infrastructure.dto.OrderItemVo"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO order_items (order_id, product_id, name, quantity, unit_price, total_price)
+        VALUES (#{orderId}, #{productId}, #{name}, #{quantity}, #{unitPrice}, #{totalPrice})
+    </insert>
+
+    <!-- 주문 업데이트 -->
+    <update id="updateOrder" parameterType="kr.hhplus.be.server.order.infrastructure.dto.OrderVo">
+        UPDATE orders
+        SET status = #{status},
+            original_amount = #{originalAmount},
+            discount_amount = #{discountAmount},
+            customer_coupon_no = #{customerCouponNo},
+            total_amount = #{totalAmount},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 주문번호로 주문 조회 -->
+    <select id="selectOrderByOrderNo" parameterType="string" resultMap="OrderResultMap">
+        SELECT id, order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at
+        FROM orders
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <!-- 주문 ID로 주문 조회 -->
+    <select id="selectOrderById" parameterType="long" resultMap="OrderResultMap">
+        SELECT id, order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at
+        FROM orders
+        WHERE id = #{id}
+    </select>
+
+    <!-- 고객 ID로 주문 목록 조회 -->
+    <select id="selectOrdersByCustomerId" parameterType="long" resultMap="OrderResultMap">
+        SELECT id, order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at
+        FROM orders
+        WHERE customer_id = #{customerId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 주문 ID로 주문 항목 목록 조회 -->
+    <select id="selectOrderItemsByOrderId" parameterType="long" resultMap="OrderItemResultMap">
+        SELECT id, order_id, product_id, name, quantity, unit_price, total_price
+        FROM order_items
+        WHERE order_id = #{orderId}
+        ORDER BY id
+    </select>
+
+</mapper>

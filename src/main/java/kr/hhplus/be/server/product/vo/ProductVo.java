@@ -12,4 +12,8 @@ public final class ProductVo {
     private final Integer productStock;
     private final String productStatus;
     private final String productDescription;
+    private final String firstInputDttm;
+    private final String firstInputId;
+    private final String lastInputDttm;
+    private final String lastInputId;
 }
