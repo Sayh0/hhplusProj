@@ -35,6 +35,9 @@ public class MyBatisOrderRepository implements OrderRepository {
                     orderVo.getOrderNo(),
                     orderVo.getCustomerId(),
                     orderVo.getStatus(),
+                    orderVo.getOriginalAmount(),
+                    orderVo.getDiscountAmount(),
+                    orderVo.getCustomerCouponNo(),
                     orderVo.getTotalAmount(),
                     LocalDateTime.now(),
                     LocalDateTime.now(),
@@ -54,6 +57,9 @@ public class MyBatisOrderRepository implements OrderRepository {
                     orderVo.getOrderNo(),
                     orderVo.getCustomerId(),
                     orderVo.getStatus(),
+                    orderVo.getOriginalAmount(),
+                    orderVo.getDiscountAmount(),
+                    orderVo.getCustomerCouponNo(),
                     orderVo.getTotalAmount(),
                     orderVo.getCreatedAt(),
                     LocalDateTime.now(),
@@ -87,6 +93,9 @@ public class MyBatisOrderRepository implements OrderRepository {
                 order.getOrderNo(),
                 order.getCustomerId(),
                 order.getStatus(),
+                order.getOriginalAmount(),
+                order.getDiscountAmount(),
+                order.getCustomerCouponNo(),
                 order.getTotalAmount(),
                 order.getCreatedAt(),
                 null, // updatedAt
@@ -118,7 +127,15 @@ public class MyBatisOrderRepository implements OrderRepository {
                         .collect(Collectors.toList())
                 : List.of();
 
-        Order order = new Order(vo.getOrderNo(), vo.getCustomerId(), items);
+        Order order;
+        if (vo.getCustomerCouponNo() != null) {
+            // 쿠폰 사용 주문
+            order = new Order(vo.getOrderNo(), vo.getCustomerId(), items,
+                    vo.getCustomerCouponNo(), vo.getDiscountAmount());
+        } else {
+            // 쿠폰 미사용 주문
+            order = new Order(vo.getOrderNo(), vo.getCustomerId(), items);
+        }
         order.setId(vo.getId());
         return order;
     }

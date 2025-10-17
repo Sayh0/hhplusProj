@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.hhplus.be.server.coupon.infrastructure.mapper.CustomerCouponMapper">
+
+    <!-- CustomerCoupon 테이블 매핑 -->
+    <resultMap id="CustomerCouponResultMap" type="kr.hhplus.be.server.coupon.infrastructure.vo.CustomerCouponVo">
+        <id property="customerCouponNo" column="customer_coupon_no"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="status" column="status"/>
+        <result property="issueDate" column="issue_date"/>
+        <result property="expireDate" column="expire_date"/>
+        <result property="useDate" column="use_date"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 고객 쿠폰 번호로 고객 쿠폰 조회 -->
+    <select id="selectCustomerCouponById" parameterType="long" resultMap="CustomerCouponResultMap">
+        SELECT customer_coupon_no, customer_id, coupon_id, status,
+               issue_date, expire_date, use_date, created_at, updated_at
+        FROM customer_coupon
+        WHERE customer_coupon_no = #{customerCouponNo}
+    </select>
+
+    <!-- 고객 쿠폰 상태 업데이트 -->
+    <update id="updateCustomerCouponStatus" parameterType="kr.hhplus.be.server.coupon.infrastructure.vo.CustomerCouponVo">
+        UPDATE customer_coupon
+        SET status = #{status},
+            use_date = #{useDate},
+            updated_at = #{updatedAt}
+        WHERE customer_coupon_no = #{customerCouponNo}
+    </update>
+
+</mapper>
+

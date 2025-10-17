@@ -16,20 +16,27 @@ public class OrderVo {
     private final String orderNo;
     private final Long customerId;
     private final OrderStatus status;
-    private final Long totalAmount;
+    private final Long originalAmount; // 할인 전 금액
+    private final Long discountAmount; // 할인 금액
+    private final Long customerCouponNo; // 사용된 쿠폰 번호 (nullable)
+    private final Long totalAmount; // 최종 결제 금액
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     
     // OrderItem 리스트 (1:N 관계)
     private final List<OrderItemVo> items;
     
-    public OrderVo(Long id, String orderNo, Long customerId, OrderStatus status, 
+    public OrderVo(Long id, String orderNo, Long customerId, OrderStatus status,
+                   Long originalAmount, Long discountAmount, Long customerCouponNo,
                    Long totalAmount, LocalDateTime createdAt, LocalDateTime updatedAt,
                    List<OrderItemVo> items) {
         this.id = id;
         this.orderNo = orderNo;
         this.customerId = customerId;
         this.status = status;
+        this.originalAmount = originalAmount;
+        this.discountAmount = discountAmount;
+        this.customerCouponNo = customerCouponNo;
         this.totalAmount = totalAmount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

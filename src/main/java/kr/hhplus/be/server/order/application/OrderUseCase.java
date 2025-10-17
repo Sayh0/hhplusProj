@@ -54,44 +54,15 @@ public class OrderUseCase {
             originalAmount += item.getTotalPrice();
         }
 
-        // 쿠폰 적용 여부에 따라 분기
+        // 주문 생성
         String orderNo = generateOrderNo();
         Order order;
         Long customerCouponNo = command.getCustomerCouponNo();
-        // 적용된 쿠폰번호 존재 - 쿠폰 사용 주문
+
         if (customerCouponNo != null) {
-            // 고객 쿠폰 조회 실패 시 예외 발생
-            CustomerCoupon customerCoupon = customerCouponRepository.findById(customerCouponNo)
-                    .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다: " + customerCouponNo));
-
-            // // 사용 가능 여부 확인
-            // if (!customerCoupon.isAvailable()) {
-            // throw new IllegalStateException("사용할 수 없는 쿠폰입니다.");
-            // }
-            // 만료 여부 먼저 체크 (구체적 메시지)
-            if (customerCoupon.getExpireDate() != null
-                    && java.time.LocalDateTime.now().isAfter(customerCoupon.getExpireDate())) {
-                throw new IllegalStateException("만료된 쿠폰입니다.");
-            }
-
-            // 사용 가능 상태 체크
-            if (!"AVAILABLE".equals(customerCoupon.getStatus())) {
-                throw new IllegalStateException("사용할 수 없는 쿠폰입니다.");
-            }
-
-            // 쿠폰 마스터 조회
-            Coupon coupon = couponRepository.findById(customerCoupon.getCouponId())
-                    .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다: " + customerCouponNo));
-
-            // 최소 주문 금액 검증
-            long minOrder = coupon.getMinOrderAmount() == null ? 0L : coupon.getMinOrderAmount().longValue();
-            if (originalAmount < minOrder) {
-                throw new IllegalArgumentException(
-                        "최소 주문 금액을 만족하지 않습니다. 필요: " + minOrder + "원, 현재: " + originalAmount + "원");
-            }
-
-            long discount = CouponDiscountCalculator.calculateDiscount(coupon, originalAmount);
-            order = new Order(orderNo, command.getCustomerId(), orderItems, customerCouponNo, discount);
+            // 쿠폰 사용 주문
+            long discountAmount = validateAndCalculateDiscount(customerCouponNo, originalAmount);
+            order = new Order(orderNo, command.getCustomerId(), orderItems, customerCouponNo, discountAmount);
         } else {
             // 쿠폰 미사용 주문
             order = new Order(orderNo, command.getCustomerId(), orderItems);
@@ -101,6 +72,46 @@ public class OrderUseCase {
         orderRepository.save(order);
 
         return order;
+    }
+
+    /**
+     * 쿠폰 검증 및 할인 금액 계산
+     *
+     * @param customerCouponNo 고객 쿠폰 번호
+     * @param originalAmount   원래 주문 금액
+     * @return 할인 금액
+     * @throws IllegalArgumentException 쿠폰을 찾을 수 없거나 최소 주문 금액 미만인 경우
+     * @throws IllegalStateException    만료되었거나 사용할 수 없는 쿠폰인 경우
+     */
+    private long validateAndCalculateDiscount(Long customerCouponNo, long originalAmount) {
+        // 고객 쿠폰 조회
+        CustomerCoupon customerCoupon = customerCouponRepository.findById(customerCouponNo)
+                .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다: " + customerCouponNo));
+
+        // 만료 여부 체크 (구체적 메시지)
+        if (customerCoupon.getExpireDate() != null
+                && java.time.LocalDateTime.now().isAfter(customerCoupon.getExpireDate())) {
+            throw new IllegalStateException("만료된 쿠폰입니다.");
+        }
+
+        // 사용 가능 상태 체크
+        if (!"AVAILABLE".equals(customerCoupon.getStatus())) {
+            throw new IllegalStateException("사용할 수 없는 쿠폰입니다.");
+        }
+
+        // 쿠폰 마스터 조회
+        Coupon coupon = couponRepository.findById(customerCoupon.getCouponId())
+                .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다: " + customerCouponNo));
+
+        // 최소 주문 금액 검증
+        long minOrder = coupon.getMinOrderAmount() == null ? 0L : coupon.getMinOrderAmount().longValue();
+        if (originalAmount < minOrder) {
+            throw new IllegalArgumentException(
+                    "최소 주문 금액을 만족하지 않습니다. 필요: " + minOrder + "원, 현재: " + originalAmount + "원");
+        }
+
+        // 할인 금액 계산
+        return CouponDiscountCalculator.calculateDiscount(coupon, originalAmount);
     }
 
     /**

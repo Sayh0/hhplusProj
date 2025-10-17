@@ -9,6 +9,9 @@
         <result property="orderNo" column="order_no"/>
         <result property="customerId" column="customer_id"/>
         <result property="status" column="status"/>
+        <result property="originalAmount" column="original_amount"/>
+        <result property="discountAmount" column="discount_amount"/>
+        <result property="customerCouponNo" column="customer_coupon_no"/>
         <result property="totalAmount" column="total_amount"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
@@ -30,8 +33,8 @@
     <!-- 주문 저장 -->
     <insert id="insertOrder" parameterType="kr.hhplus.be.server.order.infrastructure.dto.OrderVo"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO orders (order_no, customer_id, status, total_amount, created_at, updated_at)
-        VALUES (#{orderNo}, #{customerId}, #{status}, #{totalAmount}, #{createdAt}, #{updatedAt})
+        INSERT INTO orders (order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at)
+        VALUES (#{orderNo}, #{customerId}, #{status}, #{originalAmount}, #{discountAmount}, #{customerCouponNo}, #{totalAmount}, #{createdAt}, #{updatedAt})
     </insert>
 
     <!-- 주문 항목 저장 -->
@@ -45,6 +48,9 @@
     <update id="updateOrder" parameterType="kr.hhplus.be.server.order.infrastructure.dto.OrderVo">
         UPDATE orders
         SET status = #{status},
+            original_amount = #{originalAmount},
+            discount_amount = #{discountAmount},
+            customer_coupon_no = #{customerCouponNo},
             total_amount = #{totalAmount},
             updated_at = #{updatedAt}
         WHERE id = #{id}
@@ -52,21 +58,21 @@
 
     <!-- 주문번호로 주문 조회 -->
     <select id="selectOrderByOrderNo" parameterType="string" resultMap="OrderResultMap">
-        SELECT id, order_no, customer_id, status, total_amount, created_at, updated_at
+        SELECT id, order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at
         FROM orders
         WHERE order_no = #{orderNo}
     </select>
 
     <!-- 주문 ID로 주문 조회 -->
     <select id="selectOrderById" parameterType="long" resultMap="OrderResultMap">
-        SELECT id, order_no, customer_id, status, total_amount, created_at, updated_at
+        SELECT id, order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at
         FROM orders
         WHERE id = #{id}
     </select>
 
     <!-- 고객 ID로 주문 목록 조회 -->
     <select id="selectOrdersByCustomerId" parameterType="long" resultMap="OrderResultMap">
-        SELECT id, order_no, customer_id, status, total_amount, created_at, updated_at
+        SELECT id, order_no, customer_id, status, original_amount, discount_amount, customer_coupon_no, total_amount, created_at, updated_at
         FROM orders
         WHERE customer_id = #{customerId}
         ORDER BY created_at DESC
