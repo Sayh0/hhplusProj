@@ -5,6 +5,11 @@ import kr.hhplus.be.server.order.application.dto.OrderItemRequest;
 import kr.hhplus.be.server.order.domain.entity.Order;
 import kr.hhplus.be.server.order.domain.entity.OrderItem;
 import kr.hhplus.be.server.order.domain.repository.OrderRepository;
+import kr.hhplus.be.server.coupon.application.CouponDiscountCalculator;
+import kr.hhplus.be.server.coupon.domain.entity.Coupon;
+import kr.hhplus.be.server.coupon.domain.entity.CustomerCoupon;
+import kr.hhplus.be.server.coupon.domain.repository.CouponRepository;
+import kr.hhplus.be.server.coupon.domain.repository.CustomerCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +27,8 @@ import java.util.UUID;
 public class OrderUseCase {
 
     private final OrderRepository orderRepository;
+    private final CouponRepository couponRepository;
+    private final CustomerCouponRepository customerCouponRepository;
 
     /**
      * 주문을 생성합니다.
@@ -41,9 +48,54 @@ public class OrderUseCase {
             orderItems.add(orderItem);
         }
 
-        // Order 생성
+        // 원래 금액 계산
+        long originalAmount = 0L;
+        for (OrderItem item : orderItems) {
+            originalAmount += item.getTotalPrice();
+        }
+
+        // 쿠폰 적용 여부에 따라 분기
         String orderNo = generateOrderNo();
-        Order order = new Order(orderNo, command.getCustomerId(), orderItems);
+        Order order;
+        Long customerCouponNo = command.getCustomerCouponNo();
+        // 적용된 쿠폰번호 존재 - 쿠폰 사용 주문
+        if (customerCouponNo != null) {
+            // 고객 쿠폰 조회 실패 시 예외 발생
+            CustomerCoupon customerCoupon = customerCouponRepository.findById(customerCouponNo)
+                    .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다: " + customerCouponNo));
+
+            // // 사용 가능 여부 확인
+            // if (!customerCoupon.isAvailable()) {
+            // throw new IllegalStateException("사용할 수 없는 쿠폰입니다.");
+            // }
+            // 만료 여부 먼저 체크 (구체적 메시지)
+            if (customerCoupon.getExpireDate() != null
+                    && java.time.LocalDateTime.now().isAfter(customerCoupon.getExpireDate())) {
+                throw new IllegalStateException("만료된 쿠폰입니다.");
+            }
+
+            // 사용 가능 상태 체크
+            if (!"AVAILABLE".equals(customerCoupon.getStatus())) {
+                throw new IllegalStateException("사용할 수 없는 쿠폰입니다.");
+            }
+
+            // 쿠폰 마스터 조회
+            Coupon coupon = couponRepository.findById(customerCoupon.getCouponId())
+                    .orElseThrow(() -> new IllegalArgumentException("쿠폰을 찾을 수 없습니다: " + customerCouponNo));
+
+            // 최소 주문 금액 검증
+            long minOrder = coupon.getMinOrderAmount() == null ? 0L : coupon.getMinOrderAmount().longValue();
+            if (originalAmount < minOrder) {
+                throw new IllegalArgumentException(
+                        "최소 주문 금액을 만족하지 않습니다. 필요: " + minOrder + "원, 현재: " + originalAmount + "원");
+            }
+
+            long discount = CouponDiscountCalculator.calculateDiscount(coupon, originalAmount);
+            order = new Order(orderNo, command.getCustomerId(), orderItems, customerCouponNo, discount);
+        } else {
+            // 쿠폰 미사용 주문
+            order = new Order(orderNo, command.getCustomerId(), orderItems);
+        }
 
         // 저장
         orderRepository.save(order);

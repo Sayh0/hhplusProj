@@ -20,7 +20,10 @@ public class Order {
     private final Long customerId;
     private OrderStatus status;
     private final List<OrderItem> items;
-    private long totalAmount;
+    private long originalAmount; // 할인 전 금액
+    private long discountAmount; // 할인 금액
+    private Long customerCouponNo; // 사용된 고객 쿠폰 번호 (nullable)
+    private long totalAmount; // 최종 결제 금액 (originalAmount - discountAmount)
     private final LocalDateTime createdAt;
 
     // 생성자
@@ -39,7 +42,52 @@ public class Order {
         this.customerId = customerId;
         this.status = OrderStatus.PENDING;
         this.items = new ArrayList<>(items);
-        this.totalAmount = calculateTotalAmount(items);
+        this.originalAmount = calculateTotalAmount(items);
+        this.discountAmount = 0L;
+        this.customerCouponNo = null;
+        this.totalAmount = this.originalAmount;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    /**
+     * 쿠폰을 사용하여 주문을 생성합니다.
+     *
+     * @param orderNo          주문번호
+     * @param customerId       고객 ID
+     * @param items            주문 항목
+     * @param customerCouponNo 고객 쿠폰 번호 (null 허용)
+     * @param discountAmount   할인 금액 (0 이상, 원래 금액 이하)
+     */
+    public Order(String orderNo, Long customerId, List<OrderItem> items, Long customerCouponNo, long discountAmount) {
+        if (orderNo == null || orderNo.isBlank()) {
+            throw new IllegalArgumentException("orderNo는 필수입니다.");
+        }
+        if (customerId == null) {
+            throw new IllegalArgumentException("customerId는 필수입니다.");
+        }
+        if (items == null || items.isEmpty()) {
+            throw new IllegalArgumentException("주문 항목은 1개 이상이어야 합니다.");
+        }
+
+        this.orderNo = orderNo;
+        this.customerId = customerId;
+        this.status = OrderStatus.PENDING;
+        this.items = new ArrayList<>(items);
+        this.originalAmount = calculateTotalAmount(items);
+
+        if (discountAmount < 0) {
+            throw new IllegalArgumentException("할인 금액은 음수일 수 없습니다.");
+        }
+        if (discountAmount > this.originalAmount) {
+            throw new IllegalArgumentException("할인 금액은 원래 금액보다 클 수 없습니다.");
+        }
+        if (customerCouponNo != null && customerCouponNo <= 0) {
+            throw new IllegalArgumentException("쿠폰 번호는 null이거나 양수여야 합니다.");
+        }
+
+        this.discountAmount = discountAmount;
+        this.customerCouponNo = customerCouponNo;
+        this.totalAmount = this.originalAmount - this.discountAmount;
         this.createdAt = LocalDateTime.now();
     }
 

@@ -58,6 +58,9 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data.id").value(1L))
+                // 쿠폰 필드 추가: originalAmount, discountAmount, customerCouponNo
+                .andExpect(jsonPath("$.data.originalAmount").value(2000000L))
+                .andExpect(jsonPath("$.data.discountAmount").value(0L))
                 .andExpect(jsonPath("$.data.totalAmount").value(2000000L))
                 .andExpect(jsonPath("$.data.status").value("PAID"))
                 .andExpect(jsonPath("$.data.createdAt").exists());
